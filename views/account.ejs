@@ -1,0 +1,14 @@
+<h2>Account Management</h2>
+<p><strong>Username:</strong> <%= user.username %></p>
+<p><strong>Rewards Points:</strong> <%= user.rewardsPoints || 0 %></p>
+
+<h3>Your Orders</h3>
+<% if (orders.length === 0) { %>
+  <p>No orders yet.</p>
+<% } else { %>
+  <ul>
+    <% orders.forEach(order => { %>
+      <li>Order: $<%= order.total %> on <%= order.createdAt.toDateString() %></li>
+    <% }) %>
+  </ul>
+<% } %>

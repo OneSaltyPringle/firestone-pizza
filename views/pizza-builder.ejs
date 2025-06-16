@@ -1,0 +1,173 @@
+<h2>Customize Your Pizza</h2>
+
+<form method="POST" action="/pizza/order">
+  <div class="mb-3">
+    <label>Size:</label>
+    <select class="form-select" name="size" required>
+      <option value="">Select Size</option>
+      <option value="Small">Small</option>
+      <option value="Medium">Medium</option>
+      <option value="Large">Large</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label>Crust:</label>
+    <select class="form-select" id="crustSelect" name="crust" required>
+      <option value="">Select Crust</option>
+      <option value="Thin">Thin</option>
+      <option value="Regular">Regular</option>
+      <option value="Stuffed">Stuffed</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label>Sauce:</label>
+    <select class="form-select" id="sauceSelect" name="sauce" required>
+      <option value="">Select Sauce</option>
+      <option value="Tomato">Tomato</option>
+      <option value="White Garlic">White Garlic</option>
+      <option value="BBQ">BBQ</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label>Cheese:</label>
+    <select class="form-select" id="cheeseSelect" name="cheese">
+      <option value="">Select Cheese</option>
+      <option value="Mozzarella">Mozzarella</option>
+      <option value="Cheddar">Cheddar</option>
+      <option value="Vegan">Vegan</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label>Drag Toppings onto Pizza:</label>
+    <div class="d-flex gap-2 flex-wrap" id="toppingList">
+      <% toppings.forEach(t => { %>
+        <div style="text-align:center;">
+          <img src="/images/toppings/<%= t.toLowerCase().replace(/\s/g, '-').replace(/[^\w-]/g, '') %>.png"
+               alt="<%= t %>"
+               draggable="true"
+               data-topping="<%= t %>"
+               width="50"
+               height="50"
+               class="draggable-img">
+          <div><%= t %></div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <div id="pizzaCanvas"
+       style="width:300px;height:300px;position:relative;margin-bottom:20px;border-radius:50%;border:2px dashed #ccc;background-color:#f8f8f8;">
+    <p class="text-center mt-5 pt-5 text-muted">Drop toppings here</p>
+    <img id="layer-crust" style="position:absolute;width:100%;height:100%;top:0;left:0;" />
+    <img id="layer-sauce" style="position:absolute;width:93%;height:93%;top:3.5%;left:3.5%;" />
+    <img id="layer-cheese" style="position:absolute;width:86%;height:86%;top:7%;left:7%;" />
+  </div>
+
+  <input type="hidden" name="toppings" id="toppingsInput">
+  <button type="button" id="clearBtn" class="btn btn-outline-danger mt-2">Clear Toppings</button>
+  <button class="btn btn-success">Place Order</button>
+</form>
+
+<script>
+const toppingImages = document.querySelectorAll('.draggable-img');
+const canvas = document.getElementById('pizzaCanvas');
+const toppingsInput = document.getElementById('toppingsInput');
+const crustSelect = document.getElementById('crustSelect');
+const sauceSelect = document.getElementById('sauceSelect');
+const cheeseSelect = document.getElementById('cheeseSelect');
+const clearBtn = document.getElementById('clearBtn');
+
+const layerCrust = document.getElementById('layer-crust');
+const layerSauce = document.getElementById('layer-sauce');
+const layerCheese = document.getElementById('layer-cheese');
+
+let placedToppings = [];
+
+crustSelect.addEventListener('change', () => {
+  const value = crustSelect.value.toLowerCase();
+  if (value) layerCrust.src = '/images/crusts/' + value + '.png';
+});
+
+sauceSelect.addEventListener('change', () => {
+  const value = sauceSelect.value.toLowerCase().replace(/\s/g, '-');
+  if (value) layerSauce.src = '/images/sauces/' + value + '.png';
+});
+
+cheeseSelect.addEventListener('change', () => {
+  const value = cheeseSelect.value.toLowerCase();
+  if (value) layerCheese.src = '/images/cheeses/' + value + '.png';
+});
+
+clearBtn.addEventListener('click', () => {
+  const all = canvas.querySelectorAll('img[data-topping]');
+  all.forEach(img => canvas.removeChild(img));
+  placedToppings = [];
+  toppingsInput.value = "[]";
+});
+
+toppingImages.forEach(img => {
+  img.addEventListener('dragstart', e => {
+    if (!crustSelect.value || !sauceSelect.value) {
+      alert("Please select crust and sauce first!");
+      e.preventDefault();
+      return;
+    }
+    e.dataTransfer.setData('text/plain', img.dataset.topping);
+  });
+});
+
+canvas.addEventListener('dragover', e => e.preventDefault());
+
+canvas.addEventListener('drop', e => {
+  e.preventDefault();
+  const topping = e.dataTransfer.getData('text/plain');
+  const canvasRect = canvas.getBoundingClientRect();
+  const dropX = e.clientX - canvasRect.left;
+  const dropY = e.clientY - canvasRect.top;
+  const centerX = canvas.offsetWidth / 2;
+  const centerY = canvas.offsetHeight / 2;
+  const dx = dropX - centerX;
+  const dy = dropY - centerY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+
+  const region = dist < 50 ? 'center' : (dropX < centerX ? 'left' : 'right');
+  const count = region === 'center' ? 16 : 10;
+
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * 2 * Math.PI;
+    const radius = 30 + Math.random() * 90;
+    let x = centerX + radius * Math.cos(angle);
+    let y = centerY + radius * Math.sin(angle);
+
+    if (region === 'left' && x > centerX) continue;
+    if (region === 'right' && x < centerX) continue;
+
+    const el = document.createElement('img');
+    el.src = `/images/toppings/${topping.toLowerCase().replace(/\s/g, '-').replace(/[^\w-]/g, '')}.png`;
+    el.width = 20;
+    el.height = 20;
+    el.style.position = 'absolute';
+    el.style.left = (x - 10) + 'px';
+    el.style.top = (y - 10) + 'px';
+    el.title = 'Click to remove';
+    el.style.cursor = 'pointer';
+    el.dataset.topping = topping;
+    el.dataset.region = region;
+
+    el.onclick = () => {
+      const all = canvas.querySelectorAll(`img[data-topping='${topping}']`);
+      all.forEach(icon => canvas.removeChild(icon));
+      placedToppings = placedToppings.filter(t => t.name !== topping);
+      toppingsInput.value = JSON.stringify(placedToppings);
+    };
+
+    canvas.appendChild(el);
+  }
+
+  placedToppings.push({ name: topping, region });
+  toppingsInput.value = JSON.stringify(placedToppings);
+});
+</script>
