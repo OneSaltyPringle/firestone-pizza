@@ -95,19 +95,21 @@ Please install the prerequisites first!
 
 _Steps to test on your own._
 
-1. Clone the repo
+1. Install MongoDB (run local)
+
+2. Clone the repo
    ```sh
    git clone https://github.com/OneSaltyPringle/firestone-pizza.git
    ```
-2. Install NPM packages
+3. Install NPM packages
    ```sh
    npm install
    ```
-3. Start the site
+4. Start the site
    ```sh
    npm start
    ```
-4. Visit the local site
+5. Visit the local site
    ```sh
    localhost:3000
    ```
