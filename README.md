@@ -48,6 +48,8 @@
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]](https://i.imgur.com/evFJ1hm.png)
+<img src="https://i.imgur.com/WYCaJ9d.png">
+<img src="https://i.imgur.com/0ZBMSaQ.png">
 
 Our group has selected the Pizza Restaurant Online Ordering System from the list of available project scenarios.
 The goal is to design a simple, responsive, and user-friendly web platform for a local pizzeria. The site will allow customers to browse the menu, view promotions, place custom orders, and complete secure online payments. The system will also include an admin panel for store managers to manage menu items and prices.
@@ -161,7 +163,7 @@ Right now this site can handle users accounts, build pizzas, and process mock pa
 [license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: https://i.imgur.com/evFJ1hm.png
+[product-screenshot]: https://i.imgur.com/b2Zo61T.png
 [Node.js]: https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white
 [Node-url]: https://nodejs.org/
 [MongoDB]: https://img.shields.io/badge/-MongoDB-13aa52?style=for-the-badge&logo=mongodb&logoColor=white
