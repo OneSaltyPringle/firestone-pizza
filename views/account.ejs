@@ -1,14 +1,31 @@
-<h2>Account Management</h2>
+
+<h2>Account Overview</h2>
+
 <p><strong>Username:</strong> <%= user.username %></p>
 <p><strong>Rewards Points:</strong> <%= user.rewardsPoints || 0 %></p>
 
-<h3>Your Orders</h3>
-<% if (orders.length === 0) { %>
-  <p>No orders yet.</p>
+<% if (orders && orders.length > 0) { %>
+  <h3>Past Orders</h3>
+  <% orders.forEach(order => { %>
+    <div class="card mb-3">
+      <div class="card-header">Order placed <%= new Date(order.createdAt).toLocaleString() %> - Total: $<%= order.total.toFixed(2) %></div>
+      <ul class="list-group list-group-flush">
+        <% order.items.forEach(i => { %>
+          <% if (i.type === 'menuItem' && i.menuItem) { %>
+            <li class="list-group-item">
+              <strong><%= i.menuItem.name %></strong> - <%= i.quantity %> × $<%= i.menuItem.price.toFixed(2) %>
+            </li>
+          <% } else if (i.type === 'pizza' && i.customPizza) { %>
+            <li class="list-group-item">
+              <strong>Custom <%= i.customPizza.size %> </strong> - <%= i.quantity %> × $<%= i.customPizza.price.toFixed(2) %><br>
+              <em>Crust:</em> <%= i.customPizza.crust %>, <em>Sauce:</em> <%= i.customPizza.sauce %>, <em>Cheese:</em> <%= i.customPizza.cheese %><br>
+              <em>Toppings:</em> <%= i.customPizza.toppings.map(t => t.name + (t.region ? ' (' + t.region + ')' : '')).join(', ') || 'None' %>
+            </li>
+          <% } %>
+        <% }) %>
+      </ul>
+    </div>
+  <% }) %>
 <% } else { %>
-  <ul>
-    <% orders.forEach(order => { %>
-      <li>Order: $<%= order.total %> on <%= order.createdAt.toDateString() %></li>
-    <% }) %>
-  </ul>
+  <p>You haven't placed any orders yet.</p>
 <% } %>

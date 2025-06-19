@@ -1,0 +1,27 @@
+
+<h2>Menu</h2>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  <% if (items && items.length > 0) { items.forEach(item => { %>
+    <div class="col">
+      <div class="card h-100">
+        <img src="<%= item.imageUrl %>" class="card-img-top" alt="<%= item.name %>">
+        <div class="card-body">
+          <h5 class="card-title"><%= item.name %></h5>
+          <p class="card-text"><%= item.description %></p>
+          <p class="card-text"><strong>$<%= item.price.toFixed(2) %></strong></p>
+          <% if (item.isPizza) { %>
+            <a href="/pizza/builder" class="btn btn-outline-primary">Customize</a>
+          <% } else { %>
+            <form method="POST" action="/cart/add">
+              <input type="hidden" name="menuItemId" value="<%= item._id %>">
+              <button class="btn btn-primary">Add to Cart</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  <% }) } else { %>
+    <p>No items available in the menu.</p>
+  <% } %>
+</div>

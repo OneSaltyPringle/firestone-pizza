@@ -1,16 +1,20 @@
+
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
 const Order = require('../models/Order');
+const MenuItem = require('../models/MenuItem');
 
-router.get('/', async (req, res) => {
-  if (!req.session.user) return res.redirect('/login');
-  const orders = await Order.find({ userId: req.session.user._id });
-  res.render('account', {
-    title: 'My Account',
-    user: req.session.user,
-    orders
-  });
+function ensureUser(req, res, next) {
+  if (req.session && req.session.user) {
+    return next();
+  } else {
+    return res.redirect('/login');
+  }
+}
+
+router.get('/', ensureUser, async (req, res) => {
+  const orders = await Order.find({ user: req.session.user._id }).sort({ createdAt: -1 }).populate('items.menuItem');
+  res.render('account', { orders });
 });
 
 module.exports = router;

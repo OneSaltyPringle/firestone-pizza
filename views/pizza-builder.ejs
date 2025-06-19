@@ -1,13 +1,16 @@
 <h2>Customize Your Pizza</h2>
 
-<form method="POST" action="/pizza/order">
+<form method="POST" action="/pizza/builder/add" id="pizzaForm">
   <div class="mb-3">
     <label>Size:</label>
     <select class="form-select" name="size" required>
       <option value="">Select Size</option>
-      <option value="Small">Small</option>
-      <option value="Medium">Medium</option>
-      <option value="Large">Large</option>
+      
+      <% if (presetPizzas && presetPizzas.length > 0) { %>
+        <% presetPizzas.forEach(pizza => { %>
+          <option value="<%= pizza.name %>"><%= pizza.name %></option>
+        <% }) %>
+      <% } %>
     </select>
   </div>
   <div class="mb-3">
@@ -45,14 +48,14 @@
     <div class="d-flex gap-2 flex-wrap" id="toppingList">
       <% toppings.forEach(t => { %>
         <div style="text-align:center;">
-          <img src="/images/toppings/<%= t.toLowerCase().replace(/\s/g, '-').replace(/[^\w-]/g, '') %>.png"
-               alt="<%= t %>"
+          <img src="<%= t.image %>"
+               alt="<%= t.name %>"
                draggable="true"
-               data-topping="<%= t %>"
+               data-topping="<%= t.name %>"
                width="50"
                height="50"
                class="draggable-img">
-          <div><%= t %></div>
+          <div><%= t.name %></div>
         </div>
       <% }) %>
     </div>
@@ -68,7 +71,7 @@
 
   <input type="hidden" name="toppings" id="toppingsInput">
   <button type="button" id="clearBtn" class="btn btn-outline-danger mt-2">Clear Toppings</button>
-  <button class="btn btn-success">Place Order</button>
+  <button class="btn btn-success">Add to Cart</button>
 </form>
 
 <script>
@@ -146,7 +149,7 @@ canvas.addEventListener('drop', e => {
     if (region === 'right' && x < centerX) continue;
 
     const el = document.createElement('img');
-    el.src = `/images/toppings/${topping.toLowerCase().replace(/\s/g, '-').replace(/[^\w-]/g, '')}.png`;
+    el.src = document.querySelector(`img[data-topping="${topping}"]`).src;
     el.width = 20;
     el.height = 20;
     el.style.position = 'absolute';
@@ -169,5 +172,25 @@ canvas.addEventListener('drop', e => {
 
   placedToppings.push({ name: topping, region });
   toppingsInput.value = JSON.stringify(placedToppings);
+});
+</script>
+
+</script>
+
+
+<script>
+document.getElementById('pizzaForm').addEventListener('submit', function () {
+  const size = document.querySelector('select[name="size"]').value;
+  const crust = document.querySelector('select[name="crust"]').value;
+  const sauce = document.querySelector('select[name="sauce"]').value;
+  const cheese = document.querySelector('select[name="cheese"]').value;
+
+  document.getElementById('sizeInput').value = size;
+  document.getElementById('crustInput').value = crust;
+  document.getElementById('sauceInput').value = sauce;
+  document.getElementById('cheeseInput').value = cheese;
+
+  const toppingNames = placedToppings.map(t => t.name);
+  document.getElementById('toppingsInput').value = JSON.stringify(toppingNames);
 });
 </script>

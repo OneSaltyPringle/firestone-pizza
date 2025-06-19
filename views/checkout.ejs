@@ -1,0 +1,68 @@
+
+<h2>Your Cart</h2>
+
+<% if (cart && cart.items.length > 0) { %>
+  <table class="table">
+    <thead>
+      <tr><th>Image</th><th>Item</th><th>Description</th><th>Price</th><th>Qty</th></tr>
+    </thead>
+    <tbody>
+      <% cart.items.forEach(i => { 
+           if (i.type === 'menuItem' && i.menuItem) { %>
+        <tr>
+          <td><img src="<%= i.menuItem.imageUrl %>" width="75"/></td>
+          <td><%= i.menuItem.name %></td>
+          <td><%= i.menuItem.description %></td>
+          <td>$<%= i.menuItem.price.toFixed(2) %></td>
+          <td><%= i.quantity %></td>
+          <td>
+            <form action='/cart/delete/<%= i._id %>' method='POST' style='display:inline;'>
+              <button class='btn btn-sm btn-danger'>Remove</button>
+            </form>
+          </td>
+        </tr>
+      <% } else if (i.type === 'pizza' && i.customPizza) { %>
+        <tr>
+          <td><img src="<%= i.customPizza.imageUrl %>" width="75"/></td>
+          <td><%= i.customPizza.size %> (Custom)</td>
+          <td>
+            <strong>Crust:</strong> <%= i.customPizza.crust %><br>
+            <strong>Sauce:</strong> <%= i.customPizza.sauce %><br>
+            <strong>Cheese:</strong> <%= i.customPizza.cheese %><br>
+            
+<strong>Toppings:</strong>
+<%=
+  i.customPizza.toppings
+    .map(t => t.name + (t.region ? ' (' + t.region + ')' : ''))
+    .join(', ') || 'None'
+%>
+
+          </td>
+          <td>$<%= i.customPizza.price.toFixed(2) %></td>
+          <td><%= i.quantity %></td>
+          <td>
+            <form action='/cart/delete/<%= i._id %>' method='POST' style='display:inline;'>
+              <button class='btn btn-sm btn-danger'>Remove</button>
+            </form>
+          </td>
+        </tr>
+      <% } }) %>
+    </tbody>
+  </table>
+  <form action="/cart/checkout/complete" method="POST" onsubmit="return confirm('Simulate placing this order?');"><button type="submit" class="btn btn-success">Place Order</button></form>
+<% } else { %>
+  <p>Your cart is empty.</p>
+<% } %>
+
+<% let total = 0; %>
+<% cart.items.forEach(i => {
+  if (i.type === 'pizza' && i.customPizza) {
+    total += i.customPizza.price * i.quantity;
+  } else if (i.type === 'menuItem' && i.menuItem) {
+    total += i.menuItem.price * i.quantity;
+  }
+}) %>
+
+<div class="text-end mt-3">
+  <h5>Total: $<%= total.toFixed(2) %></h5>
+</div>

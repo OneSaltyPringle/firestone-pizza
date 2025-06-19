@@ -64,7 +64,7 @@ Key Features Will Include:
 This course (CS491) focuses on project initiation and product envisioning. We will define the product backlog, roles, and processes, and prepare sprint planning for Sprint 1 and Sprint 2 in anticipation of implementation during CS492.
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 
 
@@ -75,7 +75,7 @@ This section should list any major frameworks/libraries used.
 * [![Next][Node.js]][Node-url]
 * [![React][MongoDB]][Mongo-url]
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 
 
@@ -114,17 +114,17 @@ _Steps to test on your own._
    localhost:3000
    ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Right now this site can handle users accounts, pizza builder, and process moch payments.
+Right now this site can handle users accounts, build pizzas, and process mock payments with a cart and checkout system. Administrators can edit/add menu items and pizzas/toppings. 
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 
 
@@ -133,7 +133,8 @@ Right now this site can handle users accounts, pizza builder, and process moch p
 
 - [x] Add Accounts
 - [x] Add Basis of pizza builder
-- [ ] Add Admin panel for adding toppings, adjusting prices, and adding items
+- [x] Add Admin panel for adding toppings, adjusting prices, and adding menu items
+- [ ] Add Security features and Account edit.
 - [ ] Add UI
 - [ ] Add Proper payment processing and handling
 
