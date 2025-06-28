@@ -133,12 +133,7 @@ Right now this site can handle users accounts, build pizzas, and process mock pa
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] Add Accounts
-- [x] Add Basis of pizza builder
-- [x] Add Admin panel for adding toppings, adjusting prices, and adding menu items
-- [ ] Add Security features and Account edit.
-- [ ] Add UI
-- [ ] Add Proper payment processing and handling
+TBD
 
 
 
