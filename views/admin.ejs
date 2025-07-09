@@ -50,11 +50,13 @@
     <form action="/admin/crust" method="POST" class="mb-4">
       <input type="text" name="name" placeholder="Crust Name" required class="form-control mb-2">
       <input type="text" name="image" placeholder="Image Filename" class="form-control mb-2">
+      <input type="number" step="0.01" name="price" placeholder="Price" required class="form-control mb-2">
+      <input type="text" name="category" placeholder="Category (optional)" class="form-control mb-2">
       <button type="submit" class="btn btn-primary">Add Crust</button>
     </form>
 
     <table class="table table-bordered">
-      <thead><tr><th>Name</th><th>Image</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Name</th><th>Image</th><th>Price</th><th>Category</th><th>Actions</th></tr></thead>
       <tbody>
         <% crusts.forEach(item => { %>
           <tr>
@@ -85,11 +87,13 @@
     <form action="/admin/sauce" method="POST" class="mb-4">
       <input type="text" name="name" placeholder="Sauce Name" required class="form-control mb-2">
       <input type="text" name="image" placeholder="Image Filename" class="form-control mb-2">
+      <input type="number" step="0.01" name="price" placeholder="Price" required class="form-control mb-2">
+      <input type="text" name="category" placeholder="Category (optional)" class="form-control mb-2">
       <button type="submit" class="btn btn-primary">Add Sauce</button>
     </form>
 
     <table class="table table-bordered">
-      <thead><tr><th>Name</th><th>Image</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Name</th><th>Image</th><th>Price</th><th>Category</th><th>Actions</th></tr></thead>
       <tbody>
         <% sauces.forEach(item => { %>
           <tr>
@@ -121,11 +125,13 @@
     <form action="/admin/cheese" method="POST" class="mb-4">
       <input type="text" name="name" placeholder="Cheese Name" required class="form-control mb-2">
       <input type="text" name="image" placeholder="Image Filename" class="form-control mb-2">
+      <input type="number" step="0.01" name="price" placeholder="Price" required class="form-control mb-2">
+      <input type="text" name="category" placeholder="Category (optional)" class="form-control mb-2">
       <button type="submit" class="btn btn-primary">Add Cheese</button>
     </form>
 
     <table class="table table-bordered">
-      <thead><tr><th>Name</th><th>Image</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Name</th><th>Image</th><th>Price</th><th>Category</th><th>Actions</th></tr></thead>
       <tbody>
         <% cheeses.forEach(item => { %>
           <tr>
