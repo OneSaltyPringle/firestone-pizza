@@ -125,6 +125,23 @@ _Steps to test on your own._
 
 Right now this site can handle users accounts, build pizzas, and process mock payments with a cart and checkout system. Administrators can edit/add menu items and pizzas/toppings. 
 
+### High-Level Design Overview
+The Firestone Pizza Co. Online Ordering System will be a web-based application composed of three main components:
+1. Customer-Facing Website
+   - Browse and customize pizzas and other menu items
+   - Add items to a shopping cart
+   - Create and manage customer accounts
+   - Complete secure online payment transactions
+2. Admin Panel
+   - Manage menu items, prices, categories
+   - View and manage orders
+   - Manage promotions and discounts
+3. Backend Server / API
+   - Manage business logic
+   - Store and retrieve data from the database
+   - Handle authentication and authorization
+   - Interface with payment gateway
+
 ### Use Case Diagram
 <img src="https://i.imgur.com/pFPtZqH.png" alt="Use Case Diagram" width="171" height="492.5">
 
