@@ -103,6 +103,11 @@ router.post('/topping/edit/:id', ensureAdmin, async (req, res) => {
   res.redirect('/admin');
 });
 
+router.post('/topping/delete/:id', ensureAdmin, async (req, res) => {
+  await Topping.findByIdAndDelete(req.params.id);
+  res.redirect('/admin');
+});
+
 router.post('/crust/delete/:id', ensureAdmin, async (req, res) => {
   await Crust.findByIdAndDelete(req.params.id);
   res.redirect('/admin');
