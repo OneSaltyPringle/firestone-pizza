@@ -5,43 +5,44 @@
     <label>Size:</label>
     <select class="form-select" name="size" required>
       <option value="">Select Size</option>
-      
-      <% if (presetPizzas && presetPizzas.length > 0) { %>
+
+      <% if (typeof presetPizzas !== "undefined" && presetPizzas.length > 0) { %>
         <% presetPizzas.forEach(pizza => { %>
-          <option value="<%= pizza.name %>"><%= pizza.name %></option>
+          <option value="<%= pizza._id %>"><%= pizza.name %></option>
         <% }) %>
       <% } %>
     </select>
   </div>
-  <div class="mb-3">
-    <label>Crust:</label>
-    <select class="form-select" id="crustSelect" name="crust" required>
-      <option value="">Select Crust</option>
-      <option value="Thin">Thin</option>
-      <option value="Regular">Regular</option>
-      <option value="Stuffed">Stuffed</option>
-    </select>
-  </div>
 
   <div class="mb-3">
-    <label>Sauce:</label>
-    <select class="form-select" id="sauceSelect" name="sauce" required>
-      <option value="">Select Sauce</option>
-      <option value="Tomato">Tomato</option>
-      <option value="White Garlic">White Garlic</option>
-      <option value="BBQ">BBQ</option>
-    </select>
-  </div>
+  <label for="crustSelect" class="form-label">Crust:</label>
+  <select id="crustSelect" name="crust" class="form-select" required>
+    <option value="">Select Crust</option>
+    <% crusts.forEach(c => { %>
+      <option value="<%= c.image %>"><%= c.name %></option>
+    <% }) %>
+  </select>
+</div>
 
-  <div class="mb-3">
-    <label>Cheese:</label>
-    <select class="form-select" id="cheeseSelect" name="cheese">
-      <option value="">Select Cheese</option>
-      <option value="Mozzarella">Mozzarella</option>
-      <option value="Cheddar">Cheddar</option>
-      <option value="Vegan">Vegan</option>
-    </select>
-  </div>
+<div class="mb-3">
+  <label for="sauceSelect" class="form-label">Sauce:</label>
+  <select id="sauceSelect" name="sauce" class="form-select" required>
+    <option value="">Select Sauce</option>
+    <% sauces.forEach(s => { %>
+      <option value="<%= s.image %>"><%= s.name %></option>
+    <% }) %>
+  </select>
+</div>
+
+<div class="mb-3">
+  <label for="cheeseSelect" class="form-label">Cheese:</label>
+  <select id="cheeseSelect" name="cheese" class="form-select" required>
+    <option value="">Select Cheese</option>
+    <% cheeses.forEach(ch => { %>
+      <option value="<%= ch.image %>"><%= ch.name %></option>
+    <% }) %>
+  </select>
+</div>
 
   <div class="mb-3">
     <label>Drag Toppings onto Pizza:</label>
@@ -61,7 +62,7 @@
     </div>
   </div>
 
-  <div id="pizzaCanvas"
+<div id="pizzaCanvas"
        style="width:300px;height:300px;position:relative;margin-bottom:20px;border-radius:50%;border:2px dashed #ccc;background-color:#f8f8f8;">
     <p class="text-center mt-5 pt-5 text-muted">Drop toppings here</p>
     <img id="layer-crust" style="position:absolute;width:100%;height:100%;top:0;left:0;" />
@@ -91,17 +92,17 @@ let placedToppings = [];
 
 crustSelect.addEventListener('change', () => {
   const value = crustSelect.value.toLowerCase();
-  if (value) layerCrust.src = '/images/crusts/' + value + '.png';
+  if (value) layerCrust.src = value;
 });
 
 sauceSelect.addEventListener('change', () => {
   const value = sauceSelect.value.toLowerCase().replace(/\s/g, '-');
-  if (value) layerSauce.src = '/images/sauces/' + value + '.png';
+  if (value) layerSauce.src = value;
 });
 
 cheeseSelect.addEventListener('change', () => {
   const value = cheeseSelect.value.toLowerCase();
-  if (value) layerCheese.src = '/images/cheeses/' + value + '.png';
+  if (value) layerCheese.src = value;
 });
 
 clearBtn.addEventListener('click', () => {
@@ -174,9 +175,6 @@ canvas.addEventListener('drop', e => {
   toppingsInput.value = JSON.stringify(placedToppings);
 });
 </script>
-
-</script>
-
 
 <script>
 document.getElementById('pizzaForm').addEventListener('submit', function () {

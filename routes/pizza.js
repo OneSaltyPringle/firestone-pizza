@@ -1,62 +1,107 @@
-
 const express = require('express');
 const router = express.Router();
 const Topping = require('../models/Topping');
+const Crust = require('../models/Crust');
+const Sauce = require('../models/Sauce');
+const Cheese = require('../models/Cheese');
 const MenuItem = require('../models/MenuItem');
+const Cart = require('../models/Cart');
+const mongoose = require('mongoose');
 
-// GET builder page
 router.get('/builder', async (req, res) => {
-  const toppings = await Topping.find();
-  const presetPizzas = await MenuItem.find({ isPizza: true });
-  res.render('pizza-builder', { toppings, presetPizzas, title: 'Pizza Builder' });
+  try {
+    const toppings = await Topping.find();
+    const crusts = await Crust.find();
+    const sauces = await Sauce.find();
+    const cheeses = await Cheese.find();
+    const presetPizzas = await MenuItem.find({ isPizza: true });
+
+    res.render('pizza-builder', {
+      toppings,
+      crusts,
+      sauces,
+      cheeses,
+      presetPizzas
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
 });
 
-// POST pizza from builder to cart
 router.post('/builder/add', async (req, res) => {
-  const { size, crust, sauce, cheese, toppings } = req.body;
-  const user = req.session.user;
-  if (!user) return res.redirect('/login');
+  try {
+    const { size, crust, sauce, cheese, toppings } = req.body;
+    const toppingsArray = JSON.parse(toppings || '[]');
 
-  
-  const toppingList = JSON.parse(toppings || '[]');
+    let basePrice = 0;
+    let presetPizza = null;
 
-  // Lookup topping prices
-  const toppingDocs = await Topping.find({ name: { $in: toppingList.map(t => t.name) } });
-  const toppingTotal = toppingDocs.reduce((sum, t) => sum + (t.price || 0), 0);
+    if (mongoose.Types.ObjectId.isValid(size)) {
+      presetPizza = await MenuItem.findById(size);
+      if (presetPizza) {
+        basePrice = presetPizza.price;
+      }
+    } else {
+      basePrice =
+        size === 'Small' ? 8.99 :
+        size === 'Medium' ? 10.99 :
+        12.99;
+    }
 
-  let price = 0;
-  const menuMatch = await MenuItem.findOne({ name: size, isPizza: true });
-  if (menuMatch) {
-    price = menuMatch.price + toppingTotal;
-  } else {
-    price = (size === 'Small' ? 8.99 : size === 'Medium' ? 10.99 : 12.99) + toppingTotal;
+    const crustDoc = await Crust.findOne({ image: crust });
+    const sauceDoc = await Sauce.findOne({ image: sauce });
+    const cheeseDoc = await Cheese.findOne({ image: cheese });
+
+    const crustPrice = crustDoc?.price || 0;
+    const saucePrice = sauceDoc?.price || 0;
+    const cheesePrice = cheeseDoc?.price || 0;
+
+    // NEW: calculate toppings price
+    let toppingsPrice = 0;
+    if (toppingsArray.length > 0) {
+      const toppingDocs = await Topping.find({
+        name: { $in: toppingsArray.map(t => t.name) }
+      });
+
+      toppingsPrice = toppingDocs.reduce(
+        (sum, t) => sum + (t.price || 0),
+        0
+      );
+    }
+
+    const totalPrice = basePrice + crustPrice + saucePrice + cheesePrice + toppingsPrice;
+
+    const customPizza = {
+      size: presetPizza?.name || size,
+      crust,
+      sauce,
+      cheese,
+      toppings: toppingsArray,
+      price: totalPrice,
+      imageUrl: '/images/pizza-base.png'
+    };
+
+    let cart = await Cart.findOne({ user: req.session.user._id });
+    if (!cart) {
+      cart = new Cart({
+        user: req.session.user._id,
+        items: []
+      });
+    }
+
+    cart.items.push({
+      type: 'pizza',
+      customPizza,
+      quantity: 1
+    });
+
+    await cart.save();
+    res.redirect('/cart');
+  } catch (err) {
+    console.error('Error saving pizza to cart:', err);
+    res.status(500).send('Server error adding pizza to cart');
   }
-
-
-  const pizzaData = {
-    size,
-    crust,
-    sauce,
-    cheese,
-    toppings: toppingList,
-    price,
-    imageUrl: '/images/pizza-base.png'
-  };
-
-  const Cart = require('../models/Cart');
-  let cart = await Cart.findOne({ user: user._id });
-  if (!cart) {
-    cart = new Cart({ user: user._id, items: [] });
-  }
-
-  cart.items.push({
-    type: 'pizza',
-    customPizza: pizzaData,
-    quantity: 1
-  });
-
-  await cart.save();
-  res.redirect('/cart');
 });
 
 module.exports = router;

@@ -1,7 +1,15 @@
-
 <h2>Admin Panel</h2>
 
-<h3>Manage Toppings</h3>
+<div class="card mb-3">
+  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#admin1" role="button" aria-expanded="false">
+    <strong>Builder Editor</strong>
+  </div>
+  <div id="admin1" class="collapse show card-body">
+<div class="card mb-3">
+  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#section1" role="button" aria-expanded="false">
+    <strong>Manage Builder Toppings</strong>
+  </div>
+  <div id="section1" class="collapse show card-body">
 <form action="/admin/topping" method="POST" class="mb-4">
   <input type="text" name="name" placeholder="Topping Name" required class="form-control mb-2">
   <input type="text" name="image" placeholder="Image Filename" class="form-control mb-2">
@@ -31,21 +39,144 @@
     <% }) %>
   </tbody>
 </table>
+  </div>
+</div>
 
-<hr>
+<div class="card mb-3">
+  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#sectionCrusts" role="button" aria-expanded="false">
+    <strong>Manage Builder Crusts</strong>
+  </div>
+  <div id="sectionCrusts" class="collapse show card-body">
+    <form action="/admin/crust" method="POST" class="mb-4">
+      <input type="text" name="name" placeholder="Crust Name" required class="form-control mb-2">
+      <input type="text" name="image" placeholder="Image Filename" class="form-control mb-2">
+      <button type="submit" class="btn btn-primary">Add Crust</button>
+    </form>
 
+    <table class="table table-bordered">
+      <thead><tr><th>Name</th><th>Image</th><th>Actions</th></tr></thead>
+      <tbody>
+        <% crusts.forEach(item => { %>
+          <tr>
+            <form action="/admin/crust/update/<%= item._id %>" method="POST">
+              <td><input type="text" name="name" value="<%= item.name %>" class="form-control"></td>
+              <td><input type="text" name="image" value="<%= item.image %>" class="form-control"></td>
+              <td><input type="number" step="0.01" name="price" value="<%= item.price %>" class="form-control"></td>
+              <td><input type="text" name="category" value="<%= item.category || '' %>" class="form-control"></td>
+              <td class="d-flex gap-2">
+                <button type="submit" class="btn btn-sm btn-warning">Update</button>
+            </form>
+            <form action="/admin/crust/delete/<%= item._id %>" method="POST">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+              </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-<h3>Manage Menu Items</h3>
+<div class="card mb-3">
+  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#sectionSauces" role="button" aria-expanded="false">
+    <strong>Manage Builder Sauces</strong>
+  </div>
+  <div id="sectionSauces" class="collapse show card-body">
+    <form action="/admin/sauce" method="POST" class="mb-4">
+      <input type="text" name="name" placeholder="Sauce Name" required class="form-control mb-2">
+      <input type="text" name="image" placeholder="Image Filename" class="form-control mb-2">
+      <button type="submit" class="btn btn-primary">Add Sauce</button>
+    </form>
+
+    <table class="table table-bordered">
+      <thead><tr><th>Name</th><th>Image</th><th>Actions</th></tr></thead>
+      <tbody>
+        <% sauces.forEach(item => { %>
+          <tr>
+            <form action="/admin/sauce/update/<%= item._id %>" method="POST">
+              <td><input type="text" name="name" value="<%= item.name %>" class="form-control"></td>
+              <td><input type="text" name="image" value="<%= item.image %>" class="form-control"></td>
+              
+<td><input type="number" step="0.01" name="price" value="<%= item.price %>" class="form-control"></td>
+<td><input type="text" name="category" value="<%= item.category || '' %>" class="form-control"></td>
+<td class="d-flex gap-2">
+                <button type="submit" class="btn btn-sm btn-warning">Update</button>
+            </form>
+            <form action="/admin/sauce/delete/<%= item._id %>" method="POST">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+              </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#sectionCheeses" role="button" aria-expanded="false">
+    <strong>Manage Builder Cheeses</strong>
+  </div>
+  <div id="sectionCheeses" class="collapse show card-body">
+    <form action="/admin/cheese" method="POST" class="mb-4">
+      <input type="text" name="name" placeholder="Cheese Name" required class="form-control mb-2">
+      <input type="text" name="image" placeholder="Image Filename" class="form-control mb-2">
+      <button type="submit" class="btn btn-primary">Add Cheese</button>
+    </form>
+
+    <table class="table table-bordered">
+      <thead><tr><th>Name</th><th>Image</th><th>Actions</th></tr></thead>
+      <tbody>
+        <% cheeses.forEach(item => { %>
+          <tr>
+            <form action="/admin/cheese/update/<%= item._id %>" method="POST">
+              <td><input type="text" name="name" value="<%= item.name %>" class="form-control"></td>
+              <td><input type="text" name="image" value="<%= item.image %>" class="form-control"></td>
+              
+<td><input type="number" step="0.01" name="price" value="<%= item.price %>" class="form-control"></td>
+<td><input type="text" name="category" value="<%= item.category || '' %>" class="form-control"></td>
+<td class="d-flex gap-2">
+                <button type="submit" class="btn btn-sm btn-warning">Update</button>
+            </form>
+            <form action="/admin/cheese/delete/<%= item._id %>" method="POST">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+              </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#admin2" role="button" aria-expanded="false">
+    <strong>Menu Editor</strong>
+  </div>
+  <div id="admin2" class="collapse show card-body">
+<div class="card mb-3">
+  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#section2" role="button" aria-expanded="false">
+    <strong>Manage Menu Items</strong>
+  </div>
+  <div id="section2" class="collapse show card-body">
 <form action="/admin/menu/add" method="POST" class="mb-4">
   <input type="text" name="name" placeholder="Item Name" required class="form-control mb-2">
   <input type="text" name="description" placeholder="Description" class="form-control mb-2">
   <input type="number" step="0.01" name="price" placeholder="Price" required class="form-control mb-2">
   <input type="text" name="imageUrl" placeholder="Image URL" class="form-control mb-2">
-  <button type="submit" class="btn btn-success">Add Menu Item</button>
+  <select name="category" class="form-select mb-2" required>
+    <option value="">Select Category</option>
+    <% categories.forEach(cat => { %>
+      <option value="<%= cat._id %>"><%= cat.name %></option>
+    <% }) %>
+  </select>
+  <button type="submit" class="btn btn-primary">Add Menu Item</button>
 </form>
 
 <table class="table table-bordered">
-  <thead><tr><th>Name</th><th>Description</th><th>Price</th><th>Image</th><th>Is Pizza</th><th>Actions</th></tr></thead>
+  <thead><tr><th>Name</th><th>Description</th><th>Price</th><th>Image</th><th>Category</th><th>Is Pizza?</th><th>Actions</th></tr></thead>
   <tbody>
     <% menuItems.forEach(item => { %>
       <form action="/admin/menu/edit/<%= item._id %>" method="POST">
@@ -55,6 +186,14 @@
           <td><input type="text" name="description" value="<%= item.description %>" class="form-control"></td>
           <td><input type="number" step="0.01" name="price" value="<%= item.price %>" class="form-control"></td>
           <td><input type="text" name="imageUrl" value="<%= item.imageUrl %>" class="form-control"></td>
+      <td>
+        <select name="category" class="form-select">
+          <option value="">Uncategorized</option>
+          <% categories.forEach(cat => { %>
+            <option value="<%= cat._id %>" <%= (item.category && (item.category.toString?.() === cat._id.toString() || item.category._id?.toString() === cat._id.toString())) ? "selected" : "" %>><%= cat.name %></option>
+          <% }) %>
+        </select>
+      </td>
         <td><input type="checkbox" name="isPizza" class="form-check-input" <%= item.isPizza ? 'checked' : '' %> ></td>
           <td>
             <button class="btn btn-sm btn-warning" type="submit">Update</button>
@@ -67,4 +206,42 @@
     <% }) %>
   </tbody>
 </table>
+  </div>
+</div>
 
+<div class="card mb-3">
+  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#section3" role="button" aria-expanded="false">
+    <strong>Manage Menu Categories</strong>
+  </div>
+  <div id="section3" class="collapse show card-body">
+<form action="/admin/category/add" method="POST" class="mb-4">
+  <input type="text" name="name" placeholder="Category Name" required class="form-control mb-2">
+  <input type="text" name="description" placeholder="Description (optional)" class="form-control mb-2">
+  <button type="submit" class="btn btn-primary">Add Category</button>
+</form>
+
+<table class="table table-bordered">
+  <thead>
+    <tr><th>Name</th><th>Description</th><th>Actions</th></tr>
+  </thead>
+  <tbody>
+    <% categories.forEach(c => { %>
+      <tr>
+        <form method="POST" action="/admin/category/update/<%= c._id %>">
+          <td><input type="text" class="form-control" name="name" value="<%= c.name %>"></td>
+          <td><input type="text" class="form-control" name="description" value="<%= c.description || '' %>"></td>
+          <td style="white-space: nowrap;">
+            <button class="btn btn-warning btn-sm" type="submit">Update</button>
+        </form>
+        <form method="POST" action="/admin/category/delete/<%= c._id %>" style="display:inline;">
+            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+        </form>
+          </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+      </div>
+    </div>
+  </div>
+</div>
