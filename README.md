@@ -125,7 +125,14 @@ _Steps to test on your own._
 
 Right now this site can handle users accounts, build pizzas, and process mock payments with a cart and checkout system. Administrators can edit/add menu items and pizzas/toppings. 
 
+### Use Case Diagram
+<img src="https://i.imgur.com/pFPtZqH.png" alt="Use Case Diagram" width="171" height="492.5">
 
+### Class Diagram
+<img src="https://i.imgur.com/vjK2c2b.png" alt="Class Diagram" width="487.5" height="326">
+
+### Activity Diagram
+<img src="https://i.imgur.com/033gZP1.png" alt="Activity Diagram">
 
 
 
