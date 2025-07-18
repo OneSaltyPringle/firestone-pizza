@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const toppingSchema = new mongoose.Schema({
   name: String,
-  category: String, // e.g., "meat", "veggie", "cheese"
+  category: String,
   price: Number,
   image: String
 });

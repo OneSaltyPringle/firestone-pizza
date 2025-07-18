@@ -1,27 +1,350 @@
+<%- include('partials/header', { title: 'Menu', user: user }) %>
 
-<h2>Menu</h2>
+<section class="section-padding">
+  <div class="container">
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
-  <% if (items && items.length > 0) { items.forEach(item => { %>
-    <div class="col">
-      <div class="card h-100">
-        <img src="<%= item.imageUrl %>" class="card-img-top" alt="<%= item.name %>">
-        <div class="card-body">
-          <h5 class="card-title"><%= item.name %></h5>
-          <p class="card-text"><%= item.description %></p>
-          <p class="card-text"><strong>$<%= item.price.toFixed(2) %></strong></p>
-          <% if (item.isPizza) { %>
-            <a href="/pizza/builder" class="btn btn-outline-primary">Customize</a>
-          <% } else { %>
-            <form method="POST" action="/cart/add">
-              <input type="hidden" name="menuItemId" value="<%= item._id %>">
-              <button class="btn btn-primary">Add to Cart</button>
-            </form>
-          <% } %>
-        </div>
-      </div>
+    <div class="text-center mb-5">
+      <h2 class="mb-3">Our Menu</h2>
+      <p>Explore our delicious pizzas and menu items!</p>
     </div>
-  <% }) } else { %>
-    <p>No items available in the menu.</p>
-  <% } %>
-</div>
+
+    <div class="custom-block bg-white shadow-lg p-5 rounded-4 mx-auto" style="max-width: 1290px;">
+
+      <% 
+        const searchStyle = ((activeTab || '#pane-all') === '#pane-all') 
+          ? '' 
+          : 'display:none;';
+      %>
+
+      <% if (categories && categories.length > 0) { %>
+
+        <!-- Tabs -->
+        <div class="d-flex justify-content-center">
+          <div class="festava-tabs flex-wrap justify-content-center w-100">
+            <button class="festava-tab <%= (activeTab || '#pane-all') === '#pane-all' ? 'active' : '' %>" data-tab="#pane-all">
+              All Items
+            </button>
+            <% categories.forEach((cat) => { %>
+              <button class="festava-tab <%= activeTab === '#pane-' + cat._id ? 'active' : '' %>" data-tab="#pane-<%= cat._id %>">
+                <%= cat.name %>
+              </button>
+            <% }) %>
+            <% if (uncategorizedItems.length > 0) { %>
+              <button class="festava-tab <%= activeTab === '#pane-uncategorized' ? 'active' : '' %>" data-tab="#pane-uncategorized">
+                Uncategorized
+              </button>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Sort & Search Desktop -->
+        <div class="menu-controls d-none d-md-flex flex-row justify-content-between align-items-center gap-3 my-4">
+          <form method="GET" action="/menu" class="sortby">
+            <input type="hidden" name="tab" id="tabInput" value="<%= activeTab || '#pane-all' %>">
+            <label class="fw-semibold me-2">Sort By:</label>
+            <select name="sort" class="form-select w-auto" onchange="this.form.submit()">
+              <option value="name_asc" <%= sortOption === 'name_asc' ? 'selected' : '' %>>Name (A-Z)</option>
+              <option value="name_desc" <%= sortOption === 'name_desc' ? 'selected' : '' %>>Name (Z-A)</option>
+              <option value="price_asc" <%= sortOption === 'price_asc' ? 'selected' : '' %>>Price (Low → High)</option>
+              <option value="price_desc" <%= sortOption === 'price_desc' ? 'selected' : '' %>>Price (High → Low)</option>
+            </select>
+          </form>
+
+          <div id="search-wrapper" class="search d-flex gap-2" <%= searchStyle ? `style="${searchStyle}"` : '' %>>
+            <input type="text" id="searchInput" class="form-control" placeholder="Search..." autocomplete="off">
+            <button type="button" id="clearSearchBtn" class="btn custom-btn custom-border-btn">Clear</button>
+          </div>
+        </div>
+
+        <!-- Sort & Search Mobile -->
+        <div class="menu-controls d-flex d-md-none flex-column gap-3 my-4 w-100">
+          <form method="GET" action="/menu" class="sortby w-100">
+            <input type="hidden" name="tab" id="tabInputMobile" value="<%= activeTab || '#pane-all' %>">
+            <label class="fw-semibold mb-1">Sort By:</label>
+            <select name="sort" class="form-select w-100" onchange="this.form.submit()">
+              <option value="name_asc" <%= sortOption === 'name_asc' ? 'selected' : '' %>>Name (A-Z)</option>
+              <option value="name_desc" <%= sortOption === 'name_desc' ? 'selected' : '' %>>Name (Z-A)</option>
+              <option value="price_asc" <%= sortOption === 'price_asc' ? 'selected' : '' %>>Price (Low → High)</option>
+              <option value="price_desc" <%= sortOption === 'price_desc' ? 'selected' : '' %>>Price (High → Low)</option>
+            </select>
+          </form>
+
+          <div id="search-wrapper-mobile" class="search d-flex flex-column gap-2 w-100" <%= searchStyle ? `style="${searchStyle}"` : '' %>>
+            <input type="text" id="searchInputMobile" class="form-control w-100" placeholder="Search..." autocomplete="off">
+            <button type="button" id="clearSearchBtnMobile" class="btn custom-btn custom-border-btn w-100">Clear</button>
+          </div>
+        </div>
+
+        <!-- Tab Panes -->
+        <div class="tab-content">
+
+          <!-- ALL ITEMS -->
+          <div class="tab-pane <%= (activeTab || '#pane-all') === '#pane-all' ? 'active' : '' %>" id="pane-all">
+            <div id="allItemsGrid" class="menu-grid">
+              <% if (items.length > 0) { %>
+                <% items.forEach(item => { %>
+                  <div class="menu-item-card bg-white shadow">
+                    <img src="<%= item.imageUrl %>" class="img-fluid rounded mb-3" alt="<%= item.name %>">
+                    <h5 class="text-danger mb-2"><%= item.name %></h5>
+                    <p class="mb-2"><%= item.description %></p>
+                    <p class="fw-bold text-danger">$<%= item.price.toFixed(2) %></p>
+                    <% if (item.isPizza) { %>
+                      <a href="/pizza/builder" class="btn custom-btn w-100 w-md-auto">Customize</a>
+                    <% } else { %>
+                      <form method="POST" action="/cart/add">
+                        <input type="hidden" name="menuItemId" value="<%= item._id %>">
+                        <button class="btn custom-btn w-100 w-md-auto">Add to Cart</button>
+                      </form>
+                    <% } %>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <p>No items available.</p>
+              <% } %>
+            </div>
+            <div id="noResultsMsg" class="text-center text-muted" style="display: none;">
+              No results found.
+            </div>
+          </div>
+
+          <% categories.forEach(cat => { %>
+            <div class="tab-pane <%= activeTab === '#pane-' + cat._id ? 'active' : '' %>" id="pane-<%= cat._id %>">
+              <div class="menu-grid">
+                <% 
+                  const catItems = items.filter(item =>
+                    item.category?.toString() === cat._id.toString()
+                  );
+                %>
+                <% if (catItems.length > 0) { %>
+                  <% catItems.forEach(item => { %>
+                    <div class="menu-item-card bg-white shadow">
+                      <img src="<%= item.imageUrl %>" class="img-fluid rounded mb-3" alt="<%= item.name %>">
+                      <h5 class="text-danger mb-2"><%= item.name %></h5>
+                      <p class="mb-2"><%= item.description %></p>
+                      <p class="fw-bold text-danger">$<%= item.price.toFixed(2) %></p>
+                      <% if (item.isPizza) { %>
+                        <a href="/pizza/builder" class="btn custom-btn w-100 w-md-auto">Customize</a>
+                      <% } else { %>
+                        <form method="POST" action="/cart/add">
+                          <input type="hidden" name="menuItemId" value="<%= item._id %>">
+                          <button class="btn custom-btn w-100 w-md-auto">Add to Cart</button>
+                        </form>
+                      <% } %>
+                    </div>
+                  <% }) %>
+                <% } else { %>
+                  <p>No items available in this category.</p>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+
+          <% if (uncategorizedItems.length > 0) { %>
+            <div class="tab-pane <%= activeTab === '#pane-uncategorized' ? 'active' : '' %>" id="pane-uncategorized">
+              <div class="menu-grid">
+                <% uncategorizedItems.forEach(item => { %>
+                  <div class="menu-item-card bg-white shadow">
+                    <img src="<%= item.imageUrl %>" class="img-fluid rounded mb-3" alt="<%= item.name %>">
+                    <h5 class="text-danger mb-2"><%= item.name %></h5>
+                    <p class="mb-2"><%= item.description %></p>
+                    <p class="fw-bold text-danger">$<%= item.price.toFixed(2) %></p>
+                    <% if (item.isPizza) { %>
+                      <a href="/pizza/builder" class="btn custom-btn w-100 w-md-auto">Customize</a>
+                    <% } else { %>
+                      <form method="POST" action="/cart/add">
+                        <input type="hidden" name="menuItemId" value="<%= item._id %>">
+                        <button class="btn custom-btn w-100 w-md-auto">Add to Cart</button>
+                      </form>
+                    <% } %>
+                  </div>
+                <% }) %>
+              </div>
+            </div>
+          <% } %>
+
+        </div>
+
+      <% } else { %>
+        <p>No categories found.</p>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Menu search & sort logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabButtons = document.querySelectorAll('.festava-tab');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    const tabInput = document.getElementById('tabInput');
+    const tabInputMobile = document.getElementById('tabInputMobile');
+    const searchWrapper = document.getElementById('search-wrapper');
+    const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearSearchBtn');
+    const searchWrapperMobile = document.getElementById('search-wrapper-mobile');
+    const searchInputMobile = document.getElementById('searchInputMobile');
+    const clearBtnMobile = document.getElementById('clearSearchBtnMobile');
+    const allItemsGrid = document.getElementById('allItemsGrid');
+    const noResultsMsg = document.getElementById('noResultsMsg');
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        tabButtons.forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+
+        tabPanes.forEach(pane => {
+          pane.classList.remove('active', 'show');
+        });
+
+        const target = btn.dataset.tab;
+        const targetPane = document.querySelector(target);
+        if (targetPane) {
+          targetPane.classList.add('active', 'show');
+        }
+
+        if (tabInput) tabInput.value = target;
+        if (tabInputMobile) tabInputMobile.value = target;
+
+        if (searchWrapper) {
+          searchWrapper.style.display = (target === '#pane-all') ? 'flex' : 'none';
+        }
+        if (searchWrapperMobile) {
+          searchWrapperMobile.style.display = (target === '#pane-all') ? 'flex' : 'none';
+        }
+      });
+    });
+
+    function handleSearch(inputElem) {
+      const value = inputElem.value.toLowerCase().trim();
+      const allTabBtn = document.querySelector('.festava-tab[data-tab="#pane-all"]');
+      if (allTabBtn && !allTabBtn.classList.contains('active')) {
+        allTabBtn.click();
+      }
+      if (tabInput) tabInput.value = '#pane-all';
+      if (tabInputMobile) tabInputMobile.value = '#pane-all';
+
+      if (!allItemsGrid) return;
+      const cards = allItemsGrid.querySelectorAll('.menu-item-card');
+      let visibleCount = 0;
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        if (text.includes(value)) {
+          card.style.display = "";
+          visibleCount++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+      if (noResultsMsg) {
+        noResultsMsg.style.display = (visibleCount === 0) ? 'block' : 'none';
+      }
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('keyup', () => handleSearch(searchInput));
+    }
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        handleSearch(searchInput);
+      });
+    }
+    if (searchInputMobile) {
+      searchInputMobile.addEventListener('keyup', () => handleSearch(searchInputMobile));
+    }
+    if (clearBtnMobile) {
+      clearBtnMobile.addEventListener('click', () => {
+        searchInputMobile.value = '';
+        handleSearch(searchInputMobile);
+      });
+    }
+  });
+</script>
+
+<style>
+  .festava-tabs {
+    background-color: #f2f2f2;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin: 20px 0;
+  }
+  .festava-tab {
+    background: transparent;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 500;
+    color: #333;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .festava-tab:hover {
+    color: #f95c19;
+  }
+  .festava-tab.active {
+    background-color: #f95c19;
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  }
+  .tab-pane {
+    display: none;
+  }
+  .tab-pane.active {
+    display: block;
+  }
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    justify-content: center;
+    gap: 2rem;
+  }
+  @media (max-width: 767.98px) {
+    .menu-grid {
+      grid-template-columns: 1fr;
+    }
+    .menu-controls {
+      gap: 1rem;
+    }
+    .menu-controls .sortby select.form-select {
+      width: 100% !important;
+    }
+    .menu-controls .search input.form-control {
+      width: 100% !important;
+    }
+  }
+  .menu-item-card .btn {
+    margin-top: 10px;
+  }
+  @media (min-width: 768px) {
+    .menu-controls {
+      flex-wrap: nowrap;
+    }
+    .sortby {
+      display: flex;
+      padding-left: 40px;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .search {
+      justify-content: flex-end;
+      padding-right: 40px;
+      flex: 1;
+    }
+    .search input.form-control {
+      max-width: 250px;
+    }
+    .search button {
+      white-space: nowrap;
+    }
+  }
+</style>
+
+<%- include('partials/footer') %>
