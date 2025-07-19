@@ -36,8 +36,26 @@ router.get('/', ensureAdmin, async (req, res) => {
 });
 
 router.post('/menu/add', ensureAdmin, async (req, res) => {
-  const { name, description, price, imageUrl, isPizza, category } = req.body;
-  await MenuItem.create({ name, description, price, imageUrl, isPizza: isPizza === 'on', category });
+  const { name, description, price, imageUrl, category } = req.body;
+  let isPizza = false;
+  if (Array.isArray(req.body.isPizza)) {
+    isPizza = req.body.isPizza.includes('true');
+  } else {
+    isPizza = req.body.isPizza === 'true';
+  }
+  await MenuItem.create({ name, description, price, imageUrl, category, isPizza });
+  res.redirect('/admin');
+});
+
+router.post('/menu/edit/:id', ensureAdmin, async (req, res) => {
+  const { name, description, price, imageUrl, category } = req.body;
+  let isPizza = false;
+  if (Array.isArray(req.body.isPizza)) {
+    isPizza = req.body.isPizza.includes('true');
+  } else {
+    isPizza = req.body.isPizza === 'true';
+  }
+  await MenuItem.findByIdAndUpdate(req.params.id, { name, description, price, imageUrl, category, isPizza });
   res.redirect('/admin');
 });
 
@@ -49,12 +67,12 @@ router.post('/menu/delete/:id', ensureAdmin, async (req, res) => {
 router.post('/category/add', ensureAdmin, async (req, res) => {
   const { name, description } = req.body;
   await MenuCategory.create({ name, description });
-  res.redirect('/admin')
+  res.redirect('/admin');
 });
 
 router.post('/category/delete/:id', ensureAdmin, async (req, res) => {
   await MenuCategory.findByIdAndDelete(req.params.id);
-  res.redirect('/admin')
+  res.redirect('/admin');
 });
 
 router.post('/crust', ensureAdmin, async (req, res) => {
@@ -72,24 +90,16 @@ router.post('/cheese', ensureAdmin, async (req, res) => {
   res.redirect('/admin');
 });
 
-module.exports = router;
-
 router.post('/topping', ensureAdmin, async (req, res) => {
   const { name, image, price, category } = req.body;
   await Topping.create({ name, image, price, category });
   res.redirect('/admin');
 });
 
-router.post('/menu/edit/:id', ensureAdmin, async (req, res) => {
-  const { name, description, price, imageUrl, category, isPizza } = req.body;
-  await MenuItem.findByIdAndUpdate(req.params.id, { name, description, price, imageUrl, category, isPizza: isPizza === 'on' });
-  res.redirect('/admin');
-});
-
 router.post('/category/update/:id', ensureAdmin, async (req, res) => {
   const { name, description } = req.body;
   await MenuCategory.findByIdAndUpdate(req.params.id, { name, description });
-  res.redirect('/admin')
+  res.redirect('/admin');
 });
 
 router.post('/topping/edit/:id', ensureAdmin, async (req, res) => {
@@ -137,3 +147,5 @@ router.post('/cheese/update/:id', ensureAdmin, async (req, res) => {
   await Cheese.findByIdAndUpdate(req.params.id, { name: req.body.name, image: req.body.image, price: parseFloat(req.body.price) || 0, category: req.body.category });
   res.redirect('/admin');
 });
+
+module.exports = router;

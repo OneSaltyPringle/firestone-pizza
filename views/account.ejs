@@ -3,6 +3,21 @@
 <section class="section-padding">
   <div class="container">
 
+    <!-- Alert Message Handlers -->
+    <% if (message) { %>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= message %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+
+    <% if (error) { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+
     <h2 class="mb-4 fw-bold">Account Overview</h2>
 
     <div class="custom-block bg-white shadow p-4 d-flex flex-wrap justify-content-between gap-3 account-overview-box">
@@ -21,21 +36,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Alert Message Handlers -->
-    <% if (message) { %>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <%= message %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    <% } %>
-
-    <% if (error) { %>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <%= error %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    <% } %>
 
     <!-- Manage Account Toggle -->
     <div class="toggle-card shadow no-radius">
