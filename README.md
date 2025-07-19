@@ -6,7 +6,7 @@
 <br />
 <div align="center">
   <a href="">
-    <img src="https://i.imgur.com/GoFkvb1.png" alt="Logo" width="80" height="80">
+    <img src="https://i.imgur.com/OT4CM0q.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Firestone Pizza Ordering System</h3>
@@ -47,9 +47,24 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://i.imgur.com/evFJ1hm.png)
-<img src="https://i.imgur.com/WYCaJ9d.png">
-<img src="https://i.imgur.com/0ZBMSaQ.png">
+[![Product Name Screen Shot][product-screenshot]](https://i.imgur.com/OT4CM0q.png)
+<details>
+  <summary>More Images</summary>
+  <ol>
+    <ul>
+      <img src="https://i.imgur.com/GXl2fcr.png">
+    </ul>
+    <ul>
+      <img src="https://i.imgur.com/JNJY2dj.png">
+    </ul>
+    <ul>
+      <img src="https://i.imgur.com/3i8eEm8.png">
+    </ul>
+    <ul>
+      <img src="https://i.imgur.com/1LohXhi.png">
+    </ul>
+  </ol>
+</details>
 
 Our group has selected the Pizza Restaurant Online Ordering System from the list of available project scenarios.
 The goal is to design a simple, responsive, and user-friendly web platform for a local pizzeria. The site will allow customers to browse the menu, view promotions, place custom orders, and complete secure online payments. The system will also include an admin panel for store managers to manage menu items and prices.
@@ -76,6 +91,7 @@ This section should list any major frameworks/libraries used.
 
 * [![Next][Node.js]][Node-url]
 * [![React][MongoDB]][Mongo-url]
+* [![React][jQuery]][jQuery-url]
 
 
 
@@ -182,8 +198,10 @@ TBD
 [license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: https://i.imgur.com/b2Zo61T.png
+[product-screenshot]: https://i.imgur.com/OT4CM0q.png
 [Node.js]: https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white
 [Node-url]: https://nodejs.org/
 [MongoDB]: https://img.shields.io/badge/-MongoDB-13aa52?style=for-the-badge&logo=mongodb&logoColor=white
 [Mongo-url]: https://mongodb.com/
+[jQuery]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
+[jQuery-url]: https://jquery.com/
