@@ -1,0 +1,81 @@
+<nav class="navbar main-navbar navbar-expand-lg">
+  <div class="container navbar-content">
+    <!-- Brand -->
+    <a href="/" class="navbar-brand">Firestone Pizza</a>
+
+    <!-- Mobile-only Pizza Builder Button -->
+    <a href="/pizza/builder" class="btn custom-btn nav-cta d-lg-none ms-auto me-3">
+      Build Pizza
+    </a>
+
+    <!-- Mobile hamburger -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse nav-right" id="navbarNav">
+      <!-- MOBILE LINKS -->
+      <ul class="navbar-nav d-lg-none">
+        <li class="nav-item">
+          <a class="nav-link <%= currentPath && currentPath.startsWith('/menu') ? 'active' : '' %>" href="/menu">Menu</a>
+        </li>
+        <% if (user) { %>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath && currentPath.startsWith('/cart') ? 'active' : '' %>" href="/cart">Cart</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath && currentPath.startsWith('/account') ? 'active' : '' %>" href="/account">Account</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+        <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath && currentPath.startsWith('/login') ? 'active' : '' %>" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath && currentPath.startsWith('/register') ? 'active' : '' %>" href="/register">Register</a>
+          </li>
+        <% } %>
+      </ul>
+
+      <!-- DESKTOP LINKS -->
+      <ul class="nav-links d-none d-lg-flex ms-auto me-lg-4">
+        <li>
+          <a class="<%= currentPath && currentPath.startsWith('/menu') ? 'active' : '' %>" href="/menu">Menu</a>
+        </li>
+        <% if (user) { %>
+          <li>
+            <a class="<%= currentPath && currentPath.startsWith('/cart') ? 'active' : '' %>" href="/cart">Cart</a>
+          </li>
+          <li>
+            <a class="<%= currentPath && currentPath.startsWith('/account') ? 'active' : '' %>" href="/account">Account</a>
+          </li>
+          <li>
+            <a href="/logout">Logout</a>
+          </li>
+        <% } else { %>
+          <li>
+            <a class="<%= currentPath && currentPath.startsWith('/login') ? 'active' : '' %>" href="/login">Login</a>
+          </li>
+          <li>
+            <a class="<%= currentPath && currentPath.startsWith('/register') ? 'active' : '' %>" href="/register">Register</a>
+          </li>
+        <% } %>
+      </ul>
+
+      <!-- Desktop-only Pizza Builder Button -->
+      <a href="/pizza/builder" class="btn custom-btn nav-cta d-none d-lg-block">
+        Build Pizza
+      </a>
+    </div>
+  </div>
+</nav>

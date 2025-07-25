@@ -1,4 +1,3 @@
-
 const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -16,24 +15,12 @@ const pizzaRouter = require('./routes/pizza');
 const menuRouter = require('./routes/menu');
 
 dotenv.config();
+
 const app = express();
-
-
-app.use(session({
-    secret: 'your_secret_key',
-    resave: false,
-    saveUninitialized: false
-}));
-
-
-app.use((req, res, next) => {
-    res.locals.user = req.user || null;
-    next();
-});
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -44,6 +31,11 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+  }
 }));
 
 app.set('view engine', 'ejs');
@@ -51,7 +43,8 @@ app.use(expressLayouts);
 app.set('layout', 'layout');
 
 app.use((req, res, next) => {
-  res.locals.user = req.session.user;
+  res.locals.user = req.session.user || null;
+  res.locals.currentPath = req.path;
   next();
 });
 
@@ -62,4 +55,10 @@ app.use('/menu', menuRouter);
 app.use('/pizza', pizzaRouter);
 app.use('/account', accountRoutes);
 
-app.listen(3000, () => console.log("Firestone Pizza running on http://localhost:3000"));
+app.listen(3000, () => {
+  console.log(`
+█▀▀ █ █▀█ █▀▀ █▀ ▀█▀ █▀█ █▄ █ █▀▀   █▀█ █ ▀█ ▀█ ▄▀█
+█▀  █ █▀▄ ██▄ ▄█  █  █▄█ █ ▀█ ██▄   █▀▀ █ █▄ █▄ █▀█
+  `);
+  console.log("Site running on: http://localhost:3000");
+});

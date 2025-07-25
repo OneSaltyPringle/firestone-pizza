@@ -1,267 +1,263 @@
-<h2>Admin Panel</h2>
+<%- include('partials/header', { title: 'Admin Panel', user }) %>
 
-<div class="card mb-3">
-  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#admin1" role="button" aria-expanded="false">
-    <strong>Builder Editor</strong>
-  </div>
-  <div id="admin1" class="collapse show card-body">
-    <div class="card mb-3">
-      <div class="card-header" data-bs-toggle="collapse" data-bs-target="#section1" role="button" aria-expanded="false">
-        <strong>Manage Builder Toppings</strong>
-      </div>
-      <div id="section1" class="collapse card-body">
-        <form action="/admin/topping" method="POST" class="mb-4">
-          <input type="text" name="name" placeholder="Topping Name" required class="form-control mb-2">
-          <input type="text" name="image" placeholder="Image Filename" class="form-control mb-2">
-          <input type="number" step="0.01" name="price" placeholder="Price" required class="form-control mb-2">
-          <input type="text" name="category" placeholder="Category (optional)" class="form-control mb-2">
-          <button type="submit" class="btn btn-primary">Add Topping</button>
-        </form>
+<section class="admin-panel-section section-padding">
+  <div class="container">
+    <div class="admin-panel">
+      <!-- Sidebar -->
+      <aside class="admin-sidebar">
+        <h3>Admin Menu</h3>
 
-        <table class="table table-bordered">
-          <thead>
-            <tr><th>Name</th><th>Image</th><th>Price</th><th>Category</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-            <% toppings.forEach(t => { %>
-              <tr>
-                <form action="/admin/topping/edit/<%= t._id %>" method="POST">
-                  <td><input type="text" name="name" value="<%= t.name %>" class="form-control"></td>
-                  <td><input type="text" name="image" value="<%= t.image %>" class="form-control"></td>
-                  <td><input type="number" step="0.01" name="price" value="<%= t.price %>" class="form-control"></td>
-                  <td><input type="text" name="category" value="<%= t.category %>" class="form-control"></td>
-                  <td class="d-flex gap-2">
-                    <button type="submit" class="btn btn-sm btn-warning">Update</button>
-                    </button>
-                  </form>
-                  <form action="/admin/topping/delete/<%= t._id %>" method="POST">
-                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                  </form>
-                  </td>
-                  </td>
-                </form>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
-      </div>
-    </div>
+        <div class="accordion-group">
+          <button class="accordion-toggle">Builder Management</button>
+          <ul class="accordion-content">
+            <li><a href="#" data-target="#sectionToppings" class="admin-link active">Builder Toppings</a></li>
+            <li><a href="#" data-target="#sectionCrusts" class="admin-link">Builder Crusts</a></li>
+            <li><a href="#" data-target="#sectionSauces" class="admin-link">Builder Sauces</a></li>
+            <li><a href="#" data-target="#sectionCheeses" class="admin-link">Builder Cheeses</a></li>
+          </ul>
+        </div>
 
-    <div class="card mb-3">
-      <div class="card-header" data-bs-toggle="collapse" data-bs-target="#sectionCrusts" role="button" aria-expanded="false">
-        <strong>Manage Builder Crusts</strong>
-      </div>
-      <div id="sectionCrusts" class="collapse card-body">
-        <form action="/admin/crust" method="POST" class="mb-4">
-          <input type="text" name="name" placeholder="Crust Name" required class="form-control mb-2">
-          <input type="text" name="image" placeholder="Image Filename" class="form-control mb-2">
-          <input type="number" step="0.01" name="price" placeholder="Price" required class="form-control mb-2">
-          <input type="text" name="category" placeholder="Category (optional)" class="form-control mb-2">
-          <button type="submit" class="btn btn-primary">Add Crust</button>
-        </form>
+        <div class="accordion-group">
+          <button class="accordion-toggle">Menu Management</button>
+          <ul class="accordion-content">
+            <li><a href="#" data-target="#sectionCategories" class="admin-link">Menu Categories</a></li>
+            <li><a href="#" data-target="#sectionMenuItems" class="admin-link">Menu Items</a></li>
+          </ul>
+        </div>
+      </aside>
 
-        <table class="table table-bordered">
-          <thead>
-            <tr><th>Name</th><th>Image</th><th>Price</th><th>Category</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-            <% crusts.forEach(item => { %>
-              <tr>
-                <form action="/admin/crust/update/<%= item._id %>" method="POST">
-                  <td><input type="text" name="name" value="<%= item.name %>" class="form-control"></td>
-                  <td><input type="text" name="image" value="<%= item.image %>" class="form-control"></td>
-                  <td><input type="number" step="0.01" name="price" value="<%= item.price %>" class="form-control"></td>
-                  <td><input type="text" name="category" value="<%= item.category || '' %>" class="form-control"></td>
-                  <td class="d-flex gap-2">
-                    <button type="submit" class="btn btn-sm btn-warning">Update</button>
-                </form>
-                <form action="/admin/crust/delete/<%= item._id %>" method="POST">
-                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                </form>
-                  </td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
-      </div>
-    </div>
+      <!-- Content Area -->
+      <div class="admin-content">
+        <div id="sectionToppings" class="admin-section">
+          <%- include('partials/admin-section', {
+                title: 'Manage Builder Toppings',
+                id: 'sectionToppings',
+                formAction: '/admin/topping',
+                fields: [
+                  { name: 'name', placeholder: 'Topping Name', required: true },
+                  { name: 'image', placeholder: 'Image Filename' },
+                  { name: 'price', placeholder: 'Price', type: 'number', step: '0.01', required: true },
+                  { name: 'category', placeholder: 'Category (optional)' }
+                ],
+                data: toppings,
+                updateActionBase: '/admin/topping/edit',
+                deleteActionBase: '/admin/topping/delete'
+          }) %>
+        </div>
 
-    <div class="card mb-3">
-      <div class="card-header" data-bs-toggle="collapse" data-bs-target="#sectionSauces" role="button" aria-expanded="false">
-        <strong>Manage Builder Sauces</strong>
-      </div>
-      <div id="sectionSauces" class="collapse card-body">
-        <form action="/admin/sauce" method="POST" class="mb-4">
-          <input type="text" name="name" placeholder="Sauce Name" required class="form-control mb-2">
-          <input type="text" name="image" placeholder="Image Filename" class="form-control mb-2">
-          <input type="number" step="0.01" name="price" placeholder="Price" required class="form-control mb-2">
-          <input type="text" name="category" placeholder="Category (optional)" class="form-control mb-2">
-          <button type="submit" class="btn btn-primary">Add Sauce</button>
-        </form>
+        <div id="sectionCrusts" class="admin-section hidden">
+          <%- include('partials/admin-section', {
+                title: 'Manage Builder Crusts',
+                id: 'sectionCrusts',
+                formAction: '/admin/crust',
+                fields: [
+                  { name: 'name', placeholder: 'Crust Name', required: true },
+                  { name: 'image', placeholder: 'Image Filename' },
+                  { name: 'price', placeholder: 'Price', type: 'number', step: '0.01', required: true },
+                  { name: 'category', placeholder: 'Category (optional)' }
+                ],
+                data: crusts,
+                updateActionBase: '/admin/crust/update',
+                deleteActionBase: '/admin/crust/delete'
+          }) %>
+        </div>
 
-        <table class="table table-bordered">
-          <thead>
-            <tr><th>Name</th><th>Image</th><th>Price</th><th>Category</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-            <% sauces.forEach(item => { %>
-              <tr>
-                <form action="/admin/sauce/update/<%= item._id %>" method="POST">
-                  <td><input type="text" name="name" value="<%= item.name %>" class="form-control"></td>
-                  <td><input type="text" name="image" value="<%= item.image %>" class="form-control"></td>
-                  <td><input type="number" step="0.01" name="price" value="<%= item.price %>" class="form-control"></td>
-                  <td><input type="text" name="category" value="<%= item.category || '' %>" class="form-control"></td>
-                  <td class="d-flex gap-2">
-                    <button type="submit" class="btn btn-sm btn-warning">Update</button>
-                </form>
-                <form action="/admin/sauce/delete/<%= item._id %>" method="POST">
-                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                </form>
-                  </td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
-      </div>
-    </div>
+        <div id="sectionSauces" class="admin-section hidden">
+          <%- include('partials/admin-section', {
+                title: 'Manage Builder Sauces',
+                id: 'sectionSauces',
+                formAction: '/admin/sauce',
+                fields: [
+                  { name: 'name', placeholder: 'Sauce Name', required: true },
+                  { name: 'image', placeholder: 'Image Filename' },
+                  { name: 'price', placeholder: 'Price', type: 'number', step: '0.01', required: true },
+                  { name: 'category', placeholder: 'Category (optional)' }
+                ],
+                data: sauces,
+                updateActionBase: '/admin/sauce/update',
+                deleteActionBase: '/admin/sauce/delete'
+          }) %>
+        </div>
 
-    <div class="card mb-3">
-      <div class="card-header" data-bs-toggle="collapse" data-bs-target="#sectionCheeses" role="button" aria-expanded="false">
-        <strong>Manage Builder Cheeses</strong>
-      </div>
-      <div id="sectionCheeses" class="collapse card-body">
-        <form action="/admin/cheese" method="POST" class="mb-4">
-          <input type="text" name="name" placeholder="Cheese Name" required class="form-control mb-2">
-          <input type="text" name="image" placeholder="Image Filename" class="form-control mb-2">
-          <input type="number" step="0.01" name="price" placeholder="Price" required class="form-control mb-2">
-          <input type="text" name="category" placeholder="Category (optional)" class="form-control mb-2">
-          <button type="submit" class="btn btn-primary">Add Cheese</button>
-        </form>
+        <div id="sectionCheeses" class="admin-section hidden">
+          <%- include('partials/admin-section', {
+                title: 'Manage Builder Cheeses',
+                id: 'sectionCheeses',
+                formAction: '/admin/cheese',
+                fields: [
+                  { name: 'name', placeholder: 'Cheese Name', required: true },
+                  { name: 'image', placeholder: 'Image Filename' },
+                  { name: 'price', placeholder: 'Price', type: 'number', step: '0.01', required: true },
+                  { name: 'category', placeholder: 'Category (optional)' }
+                ],
+                data: cheeses,
+                updateActionBase: '/admin/cheese/update',
+                deleteActionBase: '/admin/cheese/delete'
+          }) %>
+        </div>
 
-        <table class="table table-bordered">
-          <thead>
-            <tr><th>Name</th><th>Image</th><th>Price</th><th>Category</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-            <% cheeses.forEach(item => { %>
-              <tr>
-                <form action="/admin/cheese/update/<%= item._id %>" method="POST">
-                  <td><input type="text" name="name" value="<%= item.name %>" class="form-control"></td>
-                  <td><input type="text" name="image" value="<%= item.image %>" class="form-control"></td>
-                  <td><input type="number" step="0.01" name="price" value="<%= item.price %>" class="form-control"></td>
-                  <td><input type="text" name="category" value="<%= item.category || '' %>" class="form-control"></td>
-                  <td class="d-flex gap-2">
-                    <button type="submit" class="btn btn-sm btn-warning">Update</button>
-                </form>
-                <form action="/admin/cheese/delete/<%= item._id %>" method="POST">
-                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                </form>
-                  </td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
+        <div id="sectionCategories" class="admin-section hidden">
+          <%- include('partials/admin-section', {
+                title: 'Manage Menu Categories',
+                id: 'sectionCategories',
+                formAction: '/admin/category/add',
+                fields: [
+                  { name: 'name', placeholder: 'Category Name', required: true },
+                  { name: 'description', placeholder: 'Description (optional)' }
+                ],
+                data: categories,
+                updateActionBase: '/admin/category/update',
+                deleteActionBase: '/admin/category/delete'
+          }) %>
+        </div>
+
+        <div id="sectionMenuItems" class="admin-section hidden">
+          <%- include('partials/admin-section', {
+                title: 'Manage Menu Items',
+                id: 'sectionMenuItems',
+                formAction: '/admin/menu/add',
+                fields: [
+                  { name: 'name', placeholder: 'Item Name', required: true },
+                  { name: 'description', placeholder: 'Description' },
+                  { name: 'price', placeholder: 'Price', type: 'number', step: '0.01', required: true },
+                  { name: 'imageUrl', placeholder: 'Image URL' },
+                  {
+                    name: 'category',
+                    placeholder: 'Menu Category',
+                    type: 'select',
+                    required: true,
+                    options: [
+                      { value: '', label: 'Uncategorized' },
+                      ...categories.map(c => ({
+                        value: c._id,
+                        label: c.name
+                      }))
+                    ]
+                  },
+                  { name: 'isPizza', placeholder: 'Is Pizza?', type: 'checkbox' }
+                ],
+                data: menuItems,
+                updateActionBase: '/admin/menu/edit',
+                deleteActionBase: '/admin/menu/delete'
+          }) %>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="card mb-3">
-  <div class="card-header" data-bs-toggle="collapse" data-bs-target="#admin2" role="button" aria-expanded="false">
-    <strong>Menu Editor</strong>
-  </div>
-  <div id="admin2" class="collapse show card-body">
-    <div class="card mb-3">
-      <div class="card-header" data-bs-toggle="collapse" data-bs-target="#section3" role="button" aria-expanded="false">
-        <strong>Manage Menu Categories</strong>
-      </div>
-      <div id="section3" class="collapse card-body">
-        <form action="/admin/category/add" method="POST" class="mb-4">
-          <input type="text" name="name" placeholder="Category Name" required class="form-control mb-2">
-          <input type="text" name="description" placeholder="Description (optional)" class="form-control mb-2">
-          <button type="submit" class="btn btn-primary">Add Category</button>
-        </form>
+<%- include('partials/footer') %>
 
-        <table class="table table-bordered">
-          <thead>
-            <tr><th>Name</th><th>Description</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-            <% categories.forEach(c => { %>
-              <tr>
-                <form method="POST" action="/admin/category/update/<%= c._id %>">
-                  <td><input type="text" class="form-control" name="name" value="<%= c.name %>"></td>
-                  <td><input type="text" class="form-control" name="description" value="<%= c.description || '' %>"></td>
-                  <td style="white-space: nowrap;">
-                    <button class="btn btn-warning btn-sm" type="submit">Update</button>
-                </form>
-                <form method="POST" action="/admin/category/delete/<%= c._id %>" style="display:inline;">
-                    <button class="btn btn-danger btn-sm" type="submit">Delete</button>
-                </form>
-                  </td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
-      </div>
-    </div>
+<style>
+  @media (max-width: 767.98px) {
+    .admin-panel .custom-block form input,
+    .admin-panel .custom-block form select,
+    .admin-panel .custom-block form button {
+      width: 100% !important;
+      margin-bottom: 0.5rem;
+    }
+    .admin-table-container {
+      overflow-x: auto;
+    }
+    .admin-table {
+      min-width: 600px;
+    }
+    .admin-panel .actions {
+      flex-wrap: wrap;
+    }
+    .admin-panel .actions form {
+      flex: 1 1 auto;
+    }
+    .admin-panel .actions .btn {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  }
+</style>
 
-    <div class="card mb-3">
-      <div class="card-header" data-bs-toggle="collapse" data-bs-target="#section2" role="button" aria-expanded="false">
-        <strong>Manage Menu Items</strong>
-      </div>
-      <div id="section2" class="collapse card-body">
-        <form action="/admin/menu/add" method="POST" class="mb-4">
-          <input type="text" name="name" placeholder="Item Name" required class="form-control mb-2">
-          <input type="text" name="description" placeholder="Description" class="form-control mb-2">
-          <input type="number" step="0.01" name="price" placeholder="Price" required class="form-control mb-2">
-          <input type="text" name="imageUrl" placeholder="Image URL" class="form-control mb-2">
-          <select name="category" class="form-select mb-2" required>
-            <option value="">Select Category</option>
-            <% categories.forEach(cat => { %>
-              <option value="<%= cat._id %>"><%= cat.name %></option>
-            <% }) %>
-          </select>
-          <td>
-            <input type="checkbox" name="isPizza" class="form-check-input">
-            <label for="isPizzaCheckbox">Is it a Pizza? </label>
-          </td>
-          <br>
-          <button type="submit" class="btn btn-primary">Add Menu Item</button>
-        </form>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('.admin-section').forEach(sec => sec.classList.add('hidden'));
+    const firstSection = document.querySelector('.admin-section');
+    if (firstSection) {
+      firstSection.classList.remove('hidden');
+    }
 
-        <table class="table table-bordered">
-          <thead>
-            <tr><th>Name</th><th>Description</th><th>Price</th><th>Image</th><th>Category</th><th>Is Pizza?</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-            <% menuItems.forEach(item => { %>
-              <form action="/admin/menu/edit/<%= item._id %>" method="POST">
-              <tr>
-                <td><input type="text" name="name" value="<%= item.name %>" class="form-control"></td>
-                <td><input type="text" name="description" value="<%= item.description %>" class="form-control"></td>
-                <td><input type="number" step="0.01" name="price" value="<%= item.price %>" class="form-control"></td>
-                <td><input type="text" name="imageUrl" value="<%= item.imageUrl %>" class="form-control"></td>
-                <td>
-                  <select name="category" class="form-select">
-                    <option value="">Uncategorized</option>
-                    <% categories.forEach(cat => { %>
-                      <option value="<%= cat._id %>" <%= (item.category && (item.category.toString?.() === cat._id.toString() || item.category._id?.toString() === cat._id.toString())) ? "selected" : "" %>><%= cat.name %></option>
-                    <% }) %>
-                  </select>
-                </td>
-                <td><input type="checkbox" name="isPizza" class="form-check-input" <%= item.isPizza ? 'checked' : '' %> ></td>
-                <td class="d-flex gap-2">
-                  <button class="btn btn-sm btn-warning" type="submit">Update</button>
-                  </form><form action="/admin/menu/delete/<%= item._id %>" method="POST" style="display:inline;">
-                    <button class="btn btn-sm btn-danger" type="submit">Delete</button>
-                  </form>
-                </td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
+    const firstLink = document.querySelector('.admin-link');
+    if (firstLink) {
+      firstLink.classList.add('active');
+    }
+
+    document.querySelectorAll('.admin-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        document.querySelectorAll('.admin-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+
+        document.querySelectorAll('.admin-section').forEach(sec => sec.classList.add('hidden'));
+        document.querySelector(link.dataset.target).classList.remove('hidden');
+      });
+    });
+
+    document.querySelectorAll('.accordion-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        const isOpen = btn.classList.contains('active');
+
+        document.querySelectorAll('.accordion-toggle').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.accordion-content').forEach(c => c.style.display = 'none');
+
+        if (!isOpen) {
+          btn.classList.add('active');
+          content.style.display = 'block';
+        }
+      });
+    });
+
+    const firstAccordion = document.querySelector('.accordion-toggle');
+    if (firstAccordion) {
+      firstAccordion.classList.add('active');
+      const firstContent = firstAccordion.nextElementSibling;
+      if (firstContent) firstContent.style.display = 'block';
+    }
+
+    document.querySelectorAll('.admin-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const sectionId = link.dataset.target;
+        localStorage.setItem('adminActiveSection', sectionId);
+
+        document.querySelectorAll('.admin-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+
+        document.querySelectorAll('.admin-section').forEach(sec => sec.classList.add('hidden'));
+        document.querySelector(sectionId).classList.remove('hidden');
+      });
+    });
+
+    window.addEventListener('load', () => {
+      const savedSection = localStorage.getItem('adminActiveSection');
+      if (savedSection) {
+        document.querySelectorAll('.admin-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.admin-section').forEach(sec => sec.classList.add('hidden'));
+
+        const link = document.querySelector(`.admin-link[data-target="${savedSection}"]`);
+        const section = document.querySelector(savedSection);
+
+        if (link && section) {
+          link.classList.add('active');
+          section.classList.remove('hidden');
+
+          const group = link.closest('.accordion-content');
+          if (group) {
+            group.style.display = 'block';
+            const toggle = group.previousElementSibling;
+            if (toggle) toggle.classList.add('active');
+          }
+        }
+      }
+    });
+  });
+</script>

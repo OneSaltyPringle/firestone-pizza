@@ -1,68 +1,115 @@
+<%- include('partials/header', { title: 'Checkout', user: user }) %>
 
-<h2>Your Cart</h2>
+<section class="section-padding">
+  <div class="container">
 
-<% if (cart && cart.items.length > 0) { %>
-  <table class="table">
-    <thead>
-      <tr><th>Image</th><th>Item</th><th>Description</th><th>Price</th><th>Qty</th></tr>
-    </thead>
-    <tbody>
-      <% cart.items.forEach(i => { 
-           if (i.type === 'menuItem' && i.menuItem) { %>
-        <tr>
-          <td><img src="<%= i.menuItem.imageUrl %>" width="75"/></td>
-          <td><%= i.menuItem.name %></td>
-          <td><%= i.menuItem.description %></td>
-          <td>$<%= i.menuItem.price.toFixed(2) %></td>
-          <td><%= i.quantity %></td>
-          <td>
-            <form action='/cart/delete/<%= i._id %>' method='POST' style='display:inline;'>
-              <button class='btn btn-sm btn-danger'>Remove</button>
-            </form>
-          </td>
-        </tr>
-      <% } else if (i.type === 'pizza' && i.customPizza) { %>
-        <tr>
-          <td><img src="<%= i.customPizza.imageUrl %>" width="75"/></td>
-          <td><%= i.customPizza.size %> (Custom)</td>
-          <td>
-            <strong>Crust:</strong> <%= i.customPizza.crust %><br>
-            <strong>Sauce:</strong> <%= i.customPizza.sauce %><br>
-            <strong>Cheese:</strong> <%= i.customPizza.cheese %><br>
-            
-<strong>Toppings:</strong>
-<%=
-  i.customPizza.toppings
-    .map(t => t.name + (t.region ? ' (' + t.region + ')' : ''))
-    .join(', ') || 'None'
-%>
+    <h2 class="mb-4">Checkout</h2>
 
-          </td>
-          <td>$<%= i.customPizza.price.toFixed(2) %></td>
-          <td><%= i.quantity %></td>
-          <td>
-            <form action='/cart/delete/<%= i._id %>' method='POST' style='display:inline;'>
-              <button class='btn btn-sm btn-danger'>Remove</button>
-            </form>
-          </td>
-        </tr>
-      <% } }) %>
-    </tbody>
-  </table>
-  <form action="/cart/checkout/complete" method="POST" onsubmit="return confirm('Simulate placing this order?');"><button type="submit" class="btn btn-success">Place Order</button></form>
-<% } else { %>
-  <p>Your cart is empty.</p>
-<% } %>
+    <% if (cart && cart.items && cart.items.length > 0) { %>
 
-<% let total = 0; %>
-<% cart.items.forEach(i => {
-  if (i.type === 'pizza' && i.customPizza) {
-    total += i.customPizza.price * i.quantity;
-  } else if (i.type === 'menuItem' && i.menuItem) {
-    total += i.menuItem.price * i.quantity;
+      <div class="cart-table custom-block bg-white shadow p-3 mb-5">
+        
+        <!-- Table headings are only visible on larger screens -->
+        <div class="cart-header row fw-bold border-bottom pb-3 mb-3 d-none d-md-flex">
+          <div class="col-md-2">Image</div>
+          <div class="col-md-2">Item</div>
+          <div class="col-md-3">Description</div>
+          <div class="col-md-1">Price</div>
+          <div class="col-md-1">Qty</div>
+          <div class="col-md-3">Actions</div>
+        </div>
+
+        <% cart.items.forEach((i, idx) => { %>
+          <% 
+            const isSingleItem = cart.items.length === 1;
+            const isLastItem = idx === cart.items.length - 1;
+            const borderClass = (!isSingleItem && !isLastItem) ? 'border-bottom' : '';
+          %>
+
+          <% if (i.type === 'menuItem' && i.menuItem) { %>
+            <div class="cart-row row align-items-center <%= borderClass %> py-3">
+              <div class="col-12 col-md-2 mb-2 mb-md-0 text-center">
+                <img src="<%= i.menuItem.imageUrl %>" width="75" class="rounded">
+              </div>
+              <div class="col-12 col-md-2 mb-2 mb-md-0 text-center text-md-start">
+                <%= i.menuItem.name %>
+              </div>
+              <div class="col-12 col-md-3 mb-2 mb-md-0 text-center text-md-start">
+                <%= i.menuItem.description %>
+              </div>
+              <div class="col-12 col-md-1 mb-2 mb-md-0 text-center text-md-start text-danger fw-bold">
+                $<%= i.calculatedPrice.toFixed(2) %>
+              </div>
+              <div class="col-12 col-md-1 mb-2 mb-md-0 text-center text-md-start">
+                <%= i.quantity %>
+              </div>
+              <div class="col-12 col-md-3 text-center text-md-start">
+                <form action='/cart/delete/<%= i._id %>' method='POST'>
+                  <button class="btn custom-btn custom-border-btn small-btn">Remove</button>
+                </form>
+              </div>
+            </div>
+          <% } else if (i.type === 'pizza' && i.customPizza) { %>
+            <div class="cart-row row align-items-center <%= borderClass %> py-3">
+              <div class="col-12 col-md-2 mb-2 mb-md-0 text-center">
+                <img src="<%= i.customPizza.imageUrl %>" width="75" class="rounded">
+              </div>
+              <div class="col-12 col-md-2 mb-2 mb-md-0 text-center text-md-start">
+                <%= i.customPizza.size %> (Custom)
+              </div>
+              <div class="col-12 col-md-3 mb-2 mb-md-0 text-center text-md-start">
+                <strong>Crust:</strong> <%= i.customPizza.crust %><br>
+                <strong>Sauce:</strong> <%= i.customPizza.sauce %><br>
+                <strong>Cheese:</strong> <%= i.customPizza.cheese %><br>
+                <strong>Toppings:</strong>
+                <%= i.customPizza.toppings?.length
+                      ? i.customPizza.toppings.map(t => t.name + (t.region ? ' (' + t.region + ')' : '')).join(', ')
+                      : 'None' %>
+              </div>
+              <div class="col-12 col-md-1 mb-2 mb-md-0 text-center text-md-start text-danger fw-bold">
+                $<%= i.calculatedPrice.toFixed(2) %>
+              </div>
+              <div class="col-12 col-md-1 mb-2 mb-md-0 text-center text-md-start">
+                <%= i.quantity %>
+              </div>
+              <div class="col-12 col-md-3 text-center text-md-start">
+                <form action='/cart/delete/<%= i._id %>' method='POST'>
+                  <button class="btn custom-btn custom-border-btn small-btn">Remove</button>
+                </form>
+              </div>
+            </div>
+          <% } %>
+        <% }); %>
+      </div>
+
+      <% 
+        const pointsEarned = Math.floor(total / 10);
+      %>
+
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-4">
+        <div class="text-center text-md-start">
+          <h6 class="mb-2 text-danger">
+            Rewards points gained: <%= pointsEarned %>
+          </h6>
+          <h5 class="fw-bold">Total: $<%= total.toFixed(2) %></h5>
+        </div>
+        <form action="/cart/checkout/complete" method="POST" onsubmit="return confirm('Simulate placing this order?');" class="w-100 w-md-auto">
+          <button type="submit" class="btn custom-btn w-100 w-md-auto">Place Order</button>
+        </form>
+      </div>
+
+    <% } else { %>
+      <p>Your cart is empty.</p>
+    <% } %>
+
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+
+<style>
+  .small-btn {
+    padding: 0.3rem 0.75rem;
+    font-size: 0.9rem;
   }
-}) %>
-
-<div class="text-end mt-3">
-  <h5>Total: $<%= total.toFixed(2) %></h5>
-</div>
+</style>

@@ -1,31 +1,333 @@
+<%- include('partials/header', { title: 'My Account', user: user }) %>
 
-<h2>Account Overview</h2>
+<section class="section-padding">
+  <div class="container">
 
-<p><strong>Username:</strong> <%= user.username %></p>
-<p><strong>Rewards Points:</strong> <%= user.rewardsPoints || 0 %></p>
+    <!-- Alert Message Handlers -->
+    <% if (message) { %>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= message %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
 
-<% if (orders && orders.length > 0) { %>
-  <h3>Past Orders</h3>
-  <% orders.forEach(order => { %>
-    <div class="card mb-3">
-      <div class="card-header">Order placed <%= new Date(order.createdAt).toLocaleString() %> - Total: $<%= order.total.toFixed(2) %></div>
-      <ul class="list-group list-group-flush">
-        <% order.items.forEach(i => { %>
-          <% if (i.type === 'menuItem' && i.menuItem) { %>
-            <li class="list-group-item">
-              <strong><%= i.menuItem.name %></strong> - <%= i.quantity %> × $<%= i.menuItem.price.toFixed(2) %>
-            </li>
-          <% } else if (i.type === 'pizza' && i.customPizza) { %>
-            <li class="list-group-item">
-              <strong>Custom <%= i.customPizza.size %> </strong> - <%= i.quantity %> × $<%= i.customPizza.price.toFixed(2) %><br>
-              <em>Crust:</em> <%= i.customPizza.crust %>, <em>Sauce:</em> <%= i.customPizza.sauce %>, <em>Cheese:</em> <%= i.customPizza.cheese %><br>
-              <em>Toppings:</em> <%= i.customPizza.toppings.map(t => t.name + (t.region ? ' (' + t.region + ')' : '')).join(', ') || 'None' %>
-            </li>
-          <% } %>
-        <% }) %>
-      </ul>
+    <% if (error) { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+
+    <h2 class="mb-4 fw-bold">Account Overview</h2>
+
+    <div class="custom-block bg-white shadow p-4 d-flex flex-wrap justify-content-between gap-3 account-overview-box">
+      <div class="d-flex flex-column flex-md-row justify-content-between gap-3 w-100">
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+          <i class="bi bi-person-circle text-user"></i>
+          <span><strong>Username:</strong> <%= user.username %></span>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+          <i class="bi bi-envelope text-user"></i>
+          <span><strong>Email:</strong> <%= user.email %></span>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+          <i class="bi bi-stars text-warning"></i>
+          <span><strong>Rewards Points:</strong> <%= user.rewardsPoints || 0 %></span>
+        </div>
+      </div>
     </div>
-  <% }) %>
-<% } else { %>
-  <p>You haven't placed any orders yet.</p>
-<% } %>
+
+    <!-- Manage Account Toggle -->
+    <div class="toggle-card shadow no-radius">
+      <div class="toggle-header recent-order text-white p-3 fw-semibold d-flex justify-content-between align-items-center w-100" role="button">
+        <div>
+          <i class="bi bi-gear me-2"></i> Manage Account
+        </div>
+        <i class="bi bi-chevron-down toggle-icon"></i>
+      </div>
+      <div class="toggle-content-info" style="display: none;">
+        <div class="account-settings p-3">
+
+          <!-- Change Email -->
+          <div class="account-section mb-4">
+            <div class="section-header">
+              <i class="bi bi-envelope-fill me-2"></i> Change Email Address
+            </div>
+            <form method="POST" action="/account/update-email" class="w-100">
+              <div class="d-flex flex-column flex-md-row gap-2">
+                <input type="email" name="email" id="email" class="form-control" placeholder="New email" required>
+                <button class="btn btn-primary btn-block" type="submit">Change</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Change Password -->
+          <div class="account-section mb-4">
+            <div class="section-header">
+              <i class="bi bi-lock-fill me-2"></i> Change Password
+            </div>
+            <form method="POST" action="/account/change-password" class="w-100">
+              <div class="d-flex flex-column flex-md-row gap-2">
+                <input type="password" name="password" id="password" class="form-control" placeholder="New password" required>
+                <button class="btn btn-primary btn-block" type="submit">Change</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Delete Account -->
+          <div class="account-section mb-4">
+            <div class="section-header text-white">
+              <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i> Danger Zone
+            </div>
+            <form method="POST" action="/account/delete" onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.');" class="w-100">
+              <button type="submit" class="btn btn-danger w-100">Delete My Account</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Past Orders Toggle -->
+    <div class="toggle-card shadow past-orders-card closed">
+      <div class="toggle-header recent-order text-white p-3 fw-semibold d-flex justify-content-between align-items-center w-100" role="button">
+        <div>
+          <i class="bi bi-clock-history me-2"></i> Past Orders
+        </div>
+        <i class="bi bi-chevron-down toggle-icon"></i>
+      </div>
+      <div class="toggle-content" style="display: none;">
+        <div class="bg-white p-3 border border-top-0 rounded-bottom">
+          <% if (orders && orders.length > 0) { %>
+            <% orders.forEach(order => { %>
+              <div class="order-card border rounded mb-4 shadow-sm bg-white">
+                <div class="order-header recent-order text-white p-3 rounded-top fw-semibold d-flex justify-content-between align-items-center">
+                  <div>
+                    <i class="bi bi-receipt text-white me-2"></i>
+                    Order placed <%= new Date(order.createdAt).toLocaleString() %> — Total: $<%= order.total.toFixed(2) %>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <form action="/account/reorder/<%= order._id %>" method="POST" class="m-0">
+                      <button type="submit" class="btn btn-reorder d-flex align-items-center reorder-btn w-100 w-md-auto">
+                        <i class="bi bi-arrow-repeat me-1"></i> Reorder
+                      </button>
+                    </form>
+                    <span class="badge <%= order.status === 'Completed' ? 'bg-success' : 'bg-warning text-dark' %>">
+                      <%= order.status || 'Completed' %>
+                    </span>
+                  </div>
+                </div>
+                <div class="p-3">
+                  <% order.items.forEach((i, index) => { %>
+                    <% const isLast = index === order.items.length - 1; %>
+                    <% if (i.type === 'menuItem' && i.menuItem) { %>
+                      <div class="order-item py-2 <%= isLast ? '' : 'border-bottom' %> d-flex justify-content-between align-items-center">
+                        <div>
+                          <strong><%= i.menuItem.name %></strong>
+                          <span class="text-muted small ms-2">× <%= i.quantity %></span>
+                        </div>
+                        <span class="fw-bold">$<%= (i.menuItem.price * i.quantity).toFixed(2) %></span>
+                      </div>
+                    <% } else if (i.type === 'pizza' && i.customPizza) { %>
+                      <div class="order-item py-3 <%= isLast ? '' : 'border-bottom' %>">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <i class="bi bi-pizza text-danger"></i>
+                            <strong>Custom <%= i.customPizza.size %></strong>
+                            <span class="text-muted small ms-2">× <%= i.quantity %></span>
+                          </div>
+                          <span class="fw-bold">$<%= (i.customPizza.price * i.quantity).toFixed(2) %></span>
+                        </div>
+                        <div class="small mt-2 topping-p">
+                          <span class="me-2"><strong>Crust:</strong> <%= i.customPizza.crust %></span>
+                          <span class="me-2"><strong>Sauce:</strong> <%= i.customPizza.sauce %></span>
+                          <span class="me-2"><strong>Cheese:</strong> <%= i.customPizza.cheese %></span>
+                        </div>
+                        <div class="small mt-1 topping-p">
+                          <strong>Toppings:</strong>
+                          <% if (i.customPizza.toppings.length > 0) { %>
+                            <% i.customPizza.toppings.forEach(t => { %>
+                              <span class="badge bg-secondary me-1"><%= t.name %><%= t.region ? ' (' + t.region + ')' : '' %></span>
+                            <% }) %>
+                          <% } else { %>
+                            None
+                          <% } %>
+                        </div>
+                      </div>
+                    <% } %>
+                  <% }) %>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle me-2"></i> You haven't placed any orders yet.
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+
+<style>
+  .account-overview-box {
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 0;
+  }
+
+  .toggle-card {
+    background-color: #fff;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,0.075);
+    margin-bottom: 0;
+  }
+
+  .toggle-card.no-radius {
+    border-radius: 0;
+  }
+
+  .past-orders-card.closed {
+    border-radius: 0 0 0.5rem 0.5rem;
+  }
+
+  .past-orders-card.open {
+    border-radius: 0 0 0.5rem 0.5rem;
+  }
+
+  .toggle-header {
+    background-color: #212529;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle-content {
+    border-radius: 0;
+  }
+
+  .past-orders-card.open .toggle-content {
+    border-radius: 0 0 0.5rem 0.5rem;
+  }
+
+  .order-card {
+    overflow: hidden;
+  }
+
+  .order-item:last-child {
+    border-bottom: none;
+  }
+
+  .recent-order {
+    background-color: #212529;
+  }
+
+  .text-user {
+    color: #f95c19;
+  }
+
+  .topping-p {
+    padding-left: 10px;
+  }
+
+  .reorder-btn {
+    color: white;
+  }
+
+  .reorder-btn:hover {
+    color: #fdd835;
+  }
+
+  .account-settings {
+    background: #fff;
+    border: 1px solid #ddd;
+    margin-top: -1px;
+  }
+
+  .account-section {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .section-header {
+    background-color: #212529;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .account-section form {
+    background: #fff;
+    padding: 1rem;
+  }
+
+  .account-section .btn-primary {
+    background-color: #f95c19;
+    border: none;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .account-section .btn-primary:hover {
+    background-color: #fd7e3c;
+  }
+
+  .account-section .btn-danger {
+    background-color: #dc3545;
+    border: none;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .account-section .btn-danger:hover {
+    background-color: #bb2d3b;
+  }
+
+  .btn-block {
+    display: block;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .btn-block {
+      width: auto;
+      margin-top: 0;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".toggle-card").forEach(card => {
+      const header = card.querySelector(".toggle-header");
+      const content = header.nextElementSibling;
+
+      header.addEventListener("click", () => {
+        const isOpen = card.classList.contains("open");
+        if (isOpen) {
+          content.style.display = "none";
+          card.classList.remove("open");
+          card.classList.add("closed");
+        } else {
+          content.style.display = "block";
+          card.classList.remove("closed");
+          card.classList.add("open");
+        }
+      });
+    });
+  });
+</script>

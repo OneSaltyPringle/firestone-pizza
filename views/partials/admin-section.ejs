@@ -1,0 +1,116 @@
+<div class="custom-block bg-white shadow p-4 mb-4">
+  <h4 class="mb-3"><%= title %></h4>
+
+  <!-- Add New Form -->
+  <form action="<%= formAction %>" method="POST" class="mb-4">
+    <% fields.forEach(field => { %>
+      <% if (field.type === 'number') { %>
+        <input type="number"
+               name="<%= field.name %>"
+               placeholder="<%= field.placeholder %>"
+               step="<%= field.step || 'any' %>"
+               <%= field.required ? 'required' : '' %>
+               class="form-control mb-2">
+      <% } else if (field.type === 'checkbox') { %>
+        <div class="form-check mb-2">
+          <input type="hidden" name="<%= field.name %>" value="false">
+          <input type="checkbox"
+                 name="<%= field.name %>"
+                 value="true"
+                 class="form-check-input"
+                 id="add-<%= field.name %>">
+          <label class="form-check-label" for="add-<%= field.name %>">
+            <%= field.placeholder %>
+          </label>
+        </div>
+      <% } else if (field.type === 'select') { %>
+        <select name="<%= field.name %>"
+                class="form-select mb-2"
+                <%= field.required ? 'required' : '' %>>
+          <% field.options.forEach(opt => { %>
+            <option value="<%= opt.value %>"><%= opt.label %></option>
+          <% }) %>
+        </select>
+      <% } else { %>
+        <input type="text"
+               name="<%= field.name %>"
+               placeholder="<%= field.placeholder %>"
+               <%= field.required ? 'required' : '' %>
+               class="form-control mb-2">
+      <% } %>
+    <% }) %>
+    <button type="submit" class="btn custom-btn w-100 w-md-auto">Add</button>
+  </form>
+
+  <!-- Data Table -->
+  <div class="admin-table-container">
+    <table class="admin-table table table-striped table-bordered">
+      <thead>
+        <tr>
+          <% fields.forEach(field => { %>
+            <th><%= field.placeholder %></th>
+          <% }) %>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach(item => { %>
+          <tr>
+            <form action="<%= updateActionBase %>/<%= item._id %>" method="POST">
+              <% fields.forEach(field => { %>
+                <td>
+                  <% if (field.type === 'number') { %>
+                    <input type="number"
+                           name="<%= field.name %>"
+                           value="<%= 
+                             field.name === 'price' && typeof item[field.name] !== 'undefined' 
+                               ? parseFloat(item[field.name]).toFixed(2)
+                               : (item[field.name] || '')
+                           %>"
+                           step="<%= field.step || 'any' %>"
+                           class="form-control">
+                  <% } else if (field.type === 'checkbox') { %>
+                    <div class="form-check">
+                      <input type="hidden" name="<%= field.name %>" value="false">
+                      <input type="checkbox"
+                             name="<%= field.name %>"
+                             value="true"
+                             class="form-check-input"
+                             id="edit-<%= field.name %>-<%= item._id %>"
+                             <%= item[field.name] ? 'checked' : '' %>>
+                      <label class="form-check-label" for="edit-<%= field.name %>-<%= item._id %>">
+                        <%= field.placeholder %>
+                      </label>
+                    </div>
+                  <% } else if (field.type === 'select') { %>
+                    <select name="<%= field.name %>" class="form-select">
+                      <% field.options.forEach(opt => { %>
+                        <option value="<%= opt.value %>" 
+                          <%= (item[field.name] == opt.value) ? 'selected' : '' %>>
+                          <%= opt.label %>
+                        </option>
+                      <% }) %>
+                    </select>
+                  <% } else { %>
+                    <input type="text"
+                           name="<%= field.name %>"
+                           value="<%= item[field.name] || '' %>"
+                           class="form-control">
+                  <% } %>
+                </td>
+              <% }) %>
+              <td class="actions">
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn custom-btn small-btn w-100 w-md-auto">Update</button>
+            </form>
+            <form action="<%= deleteActionBase %>/<%= item._id %>" method="POST">
+                  <button type="submit" class="btn custom-btn custom-border-btn small-btn w-100 w-md-auto">Delete</button>
+            </form>
+                </div>
+              </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

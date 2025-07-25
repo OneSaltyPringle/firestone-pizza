@@ -1,5 +1,52 @@
-<div class="text-center">
-  <h1>Welcome to Firestone Pizza 🍕</h1>
-  <p>Where flavor meets fire. Build your dream pizza today!</p>
-  <a class="btn btn-danger mt-3" href="/pizza/builder">Start Building</a>
-</div>
+<%- include('partials/header', { title: 'Home', user: user }) %>
+
+<section 
+  class="hero-section d-flex justify-content-center align-items-center text-center" 
+  style="background-image: url('/images/hero-bg.jpg'); background-size: cover; background-position: center; height: 100vh; position: relative;">
+
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content position-relative text-white">
+    <h1 class="hero-title mb-4">Firestone Pizza Ordering System</h1>
+    <p class="hero-text mb-4">
+      CTU Group Project - CS491 & CS492
+    </p>
+
+    <div class="hero-buttons d-flex justify-content-center gap-3">
+      <a href="/menu" class="btn custom-btn">View Menu</a>
+      <a href="/pizza/builder" class="btn custom-btn custom-border-btn">Build Your Pizza</a>
+    </div>
+  </div>
+</section>
+
+
+<section class="section-padding">
+  <div class="container">
+    <div class="section-title text-center">
+      <h2>What makes this app special</h2>
+      <p class="text-muted">Here are some details about this app:</p>
+    </div>
+
+    <div class="grid-container">
+      <div class="featured-block">
+        <img src="/images/pizza-base.png" class="featured-img" alt="Fresh Ingredients">
+        <h4>Dynamic menu & pizza builder</h4>
+        <p>The dynamic menu & pizza builder can be fully manipulated through the front-end by an administrator. </p>
+      </div>
+
+      <div class="featured-block">
+        <img src="/images/pizza-base.png" class="featured-img" alt="Custom Pizzas">
+        <h4>Admin panel for editing menu items</h4>
+        <p>User friendly admin panel for editing the available items on the menu. Also adding/removing pizza sizes, crust, sauces, and even toppings. </p>
+      </div>
+
+      <div class="featured-block">
+        <img src="/images/pizza-base.png" class="featured-img" alt="Fast Delivery">
+        <h4>Scalable user databasing solution</h4>
+        <p>Built on MongoDB, we've built a scalable user databasing model. Further security changes will need to be implemented in the future. </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
