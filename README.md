@@ -38,7 +38,6 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
   </ol>
 </details>
 
@@ -169,14 +168,6 @@ The Firestone Pizza Co. Online Ordering System will be a web-based application c
 
 ### Activity Diagram
 <img src="https://i.imgur.com/033gZP1.png" alt="Activity Diagram">
-
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-TBD
 
 
 
